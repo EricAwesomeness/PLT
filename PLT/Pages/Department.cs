@@ -14,35 +14,24 @@ namespace PLT.Pages
         private string departmentName = string.Empty;
         public string DepartmentName
         {
-            get
-            {
-                if (string.IsNullOrEmpty(departmentName))
-                {
-                    return "N/A";
-                }
-                return departmentName;
-            }
-            set
-            {
-                departmentName = value;
-                
-            }
+            get { return departmentName; }
+            set { departmentName = value; }
         }
 
 
         private ObservableCollection<Printer> printers;
         public ObservableCollection<Printer> Printers
         {
-            get
-            {
-                return printers;
-            }
-            set
-            {
-                printers = value;
-            }
+            get { return printers; }
+            set { printers = value; }
         }
-
+        
+        private Printer p1 = new Printer("Warrenty Code 1", "P1", "P1", "P1", "P1");
+        public Printer P1
+        {
+            get { return p1; }
+            set { }
+        }
 
 
         public Department(string departmentName)

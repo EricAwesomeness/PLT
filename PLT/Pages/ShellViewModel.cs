@@ -1,4 +1,5 @@
 ﻿using Stylet;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -8,30 +9,24 @@ namespace PLT.Pages
     {
 
         #region Instantiating D1 Department; L1 Location; P1 Printer
-        private Department d1 = new Department("D1");
-        public Department D1
-        {
-            get { return d1; }
-            set { }
-        }
-
-        private Location l1 = new Location("L1");
+        private Location l1 = new Location("Location 1");
         public Location L1
         {
             get { return l1; }
             set { }
         }
 
-        private Printer p1 = new Printer("P1", "P1", "P1", "P1", "P1");
-        public Printer P1
+        private Department d1 = new Department("Department 1");
+        public Department D1
         {
-            get {return p1;}
+            get { return d1; }
             set { }
         }
+        
+        private Printer p1 = new Printer("Warrenty Code 1", "P1", "P1", "P1", "P1");
         #endregion
 
         #region Databinding input text boxs
-
         private string _mainTextBoxInput;
         public string MainTextBoxInput
         {
@@ -100,6 +95,49 @@ namespace PLT.Pages
         }
         #endregion
 
+
+
+
+        private Location _selectedLocation;
+        public Location SelectedLocation
+        {
+            get { return _selectedLocation; }
+            set
+            {
+                SetAndNotify(ref this._selectedLocation, value);
+                NotifyOfPropertyChange(nameof(CanAddLocation));
+                NotifyOfPropertyChange(nameof(CanAddDepartment));
+                NotifyOfPropertyChange(nameof(CanAddPrinter));
+            }
+        }
+        private ObservableCollection<Location> locations;
+        public ObservableCollection<Location> Locations
+        {
+            get { return locations; }
+            set { locations = value; }
+        }
+
+
+
+        private Department _selectedDepartment;
+        public Department SelectedDepartment
+        {
+            get { return _selectedDepartment; }
+            set
+            {
+                SetAndNotify(ref this._selectedDepartment, value);
+                NotifyOfPropertyChange(nameof(CanAddLocation));
+                NotifyOfPropertyChange(nameof(CanAddDepartment));
+                NotifyOfPropertyChange(nameof(CanAddPrinter));
+            }
+        }
+        public IEnumerable<Department> Departments => Locations.SelectMany(Location => Location.Departments);
+        
+
+
+
+
+
         #region Action Creations
         public bool CanAddLocation
         {
@@ -111,37 +149,26 @@ namespace PLT.Pages
         }
         public bool CanAddPrinter
         {
-            get { return !D1.Printers.Any(x => x.WarrantyCode == WarrantyCodeTextBoxInput) && !string.IsNullOrEmpty(WarrantyCodeTextBoxInput) && !string.IsNullOrEmpty(ModelTextBoxInput) && !string.IsNullOrEmpty(IPTextBoxInput); }
+            get { return !D1.Printers.Any(x => x.WarrantyCode == WarrantyCodeTextBoxInput) && !string.IsNullOrEmpty(WarrantyCodeTextBoxInput); }
         }
         public void AddLocation()
         {
             Locations.Add(new Location(MainTextBoxInput));
             NotifyOfPropertyChange(nameof(CanAddLocation));
+            NotifyOfPropertyChange(nameof(Locations));
         }
         public void AddDepartment()
         {
-            L1.Departments.Add(new Department(MainTextBoxInput));
+            SelectedLocation.Departments.Add(new Department(MainTextBoxInput));
             NotifyOfPropertyChange(nameof(CanAddDepartment));
+            NotifyOfPropertyChange(nameof(Departments));
         }
         public void AddPrinter()
         {
-            D1.Printers.Add(new Printer(WarrantyCodeTextBoxInput, ModelTextBoxInput, LocationComboBoxInput, IPTextBoxInput, DepartmentComboBox));
-            NotifyOfPropertyChange(nameof(CanAddPrinter));
-        }
-
-        #endregion
-
-        #region Locations List
-        private ObservableCollection<Location> locations;
-        public ObservableCollection<Location> Locations
-        {
-            get
+            if (SelectedDepartment != null)
             {
-                return locations;
-            }
-            set
-            {
-                locations = value;
+                SelectedDepartment.Printers.Add(new Printer(WarrantyCodeTextBoxInput, ModelTextBoxInput, LocationComboBoxInput, IPTextBoxInput, DepartmentComboBox));
+                NotifyOfPropertyChange(nameof(CanAddPrinter));
             }
         }
 
@@ -150,12 +177,7 @@ namespace PLT.Pages
         public ShellViewModel()
         {
             this.DisplayName = "Printer Location Tracker";
-
-            Locations = new ObservableCollection<Location>()
-            {
-                new Location("Location 1"),
-                new Location("Location 2")
-            };
+            Locations = new ObservableCollection<Location>(){L1};
         }
     }
 }

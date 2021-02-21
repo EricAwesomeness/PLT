@@ -15,33 +15,24 @@ namespace PLT.Pages
         private string locationName;
         public string LocationName
         {
-            get
-            {
-                if (string.IsNullOrEmpty(locationName))
-                {
-                    return "N/A";
-                }
-                return locationName;
-            }
-            set
-            {
-                locationName = value;
-            }
+            get { return locationName; }
+            set { locationName = value; }
         }
 
+
+        private Department d1 = new Department("Department 1");
+        public Department D1
+        {
+            get { return d1; }
+            set { }
+        }
 
 
         private ObservableCollection<Department> departments;
         public ObservableCollection<Department> Departments
         {
-            get
-            {
-                return departments;
-            }
-            set
-            {
-                departments = value;
-            }
+            get { return departments; }
+            set { departments = value; }
         }
 
 

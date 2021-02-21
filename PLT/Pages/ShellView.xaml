@@ -53,16 +53,16 @@
             </Grid.ColumnDefinitions>
 
 
-            <TreeView x:Name="MainTreeView" HorizontalAlignment="Stretch" Margin="1,1,0,1" VerticalAlignment="Stretch" ItemsSource="{Binding Path=Locations}">
+            <TreeView x:Name="MainTreeView" Margin="1,1,0,1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding Locations}">
                 <TreeView.ItemTemplate>
-                    <HierarchicalDataTemplate ItemsSource="{Binding L1.Departments}">
-                        <Label Content="{Binding Path=LocationName}"/>
+                    <HierarchicalDataTemplate ItemsSource="{Binding Departments}">
+                        <Label Content="{Binding LocationName}" />
                         <HierarchicalDataTemplate.ItemTemplate>
-                            <HierarchicalDataTemplate ItemsSource="{Binding Path=D1.Printers}">
-                                <Label Content="{Binding Path=DepartmentName}"/>
+                            <HierarchicalDataTemplate ItemsSource="{Binding Printers}">
+                                <Label Content="{Binding DepartmentName}" />
                                 <HierarchicalDataTemplate.ItemTemplate>
                                     <DataTemplate>
-                                        <Label Content="{Binding Path=WarrantyCode}"/>
+                                        <Label Content="{Binding WarrantyCode}" />
                                     </DataTemplate>
                                 </HierarchicalDataTemplate.ItemTemplate>
                             </HierarchicalDataTemplate>
@@ -101,19 +101,19 @@
 
 
                 <Label Content="Location" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"/>
-                <ComboBox x:Name ="LocationComboBox" SelectedIndex="0" ItemsSource="{Binding Path=Locations}" DisplayMemberPath="LocationName" TabIndex="1"  Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="6" Margin="2" />
+                <ComboBox x:Name ="LocationComboBox" SelectedItem="{Binding Path=SelectedLocation}" ItemsSource="{Binding Path=Locations}" DisplayMemberPath="LocationName" TabIndex="1"  Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="6" Margin="2" />
 
                 <Label Content="Department" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"/>
-                <ComboBox x:Name ="DepartmentComboBox" SelectedIndex="0" ItemsSource="{Binding Path=L1.Departments}" DisplayMemberPath="DepartmentName"  TabIndex="2" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="7" Margin="2"/>
+                <ComboBox x:Name ="DepartmentComboBox" SelectedItem="{Binding Path=SelectedDepartment}" ItemsSource="{Binding Path=SelectedLocation.Departments}" DisplayMemberPath="DepartmentName"  TabIndex="2" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="7" Margin="2"/>
 
                 <Label Content="Warranty Code" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"/>
                 <TextBox x:Name ="WarrantyCodeTextBox" Text="{Binding Path=WarrantyCodeTextBoxInput, UpdateSourceTrigger=PropertyChanged}" TabIndex="3" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="6"  Margin="2"/>
 
                 <Label Content="Model" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"/>
-                <TextBox x:Name ="ModelTextBox" Text="{Binding Path=ModelTextBoxInput, UpdateSourceTrigger=PropertyChanged}" TabIndex="4" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="7" Margin="2"/>
+                <TextBox x:Name ="ModelTextBox" Text="{Binding Path=ModelTextBoxInput, UpdateSourceTrigger=PropertyChanged, FallbackValue='Model Not Specified' }" TabIndex="4" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="7" Margin="2"/>
 
                 <Label Content="IP Address"  Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"/>
-                <TextBox x:Name ="IPTextBox" Text="{Binding Path=IPTextBoxInput, UpdateSourceTrigger=PropertyChanged}" TabIndex="5" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="7" Margin="2" />
+                <TextBox x:Name ="IPTextBox" Text="{Binding Path=IPTextBoxInput, UpdateSourceTrigger=PropertyChanged, FallbackValue='No Specified IP Address'}" TabIndex="5" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="7" Margin="2" />
 
                 <Label Content="Ticket History" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2"/>
                 <TextBox x:Name ="TicketHistoryTextBox" Text="{Binding Path=TicketHistoryTextBoxInput, UpdateSourceTrigger=PropertyChanged}" TabIndex="6" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="6" Margin="2"/>
