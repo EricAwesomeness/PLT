@@ -47,13 +47,18 @@
 
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width=".20*"/>
-                <ColumnDefinition Width=".004*"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="4*"/>
             </Grid.ColumnDefinitions>
 
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="20"/>
+                </Grid.RowDefinitions>
 
-            <TreeView x:Name="MainTreeView" Margin="1,1,0,1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding Locations}">
+                <TreeView x:Name="MainTreeView" Grid.Row="0" Margin="1,1,0,1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding Locations}">
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding Departments}">
                         <Label Content="{Binding LocationName}" />
@@ -71,9 +76,10 @@
                 </TreeView.ItemTemplate>
             </TreeView>
 
-
-
-            <GridSplitter Width="40" Grid.Column="1" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Left"/>
+                <TextBox Grid.Row="1" Margin="1,1,0,1" x:Name ="Searchbox" Text="{Binding Path=Searchbox, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+                
+            <GridSplitter Width="40" Grid.Column="1" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch"/>
 
             <Grid Grid.Column="2" Background="White">
 
@@ -122,10 +128,10 @@
                 <Button Content="Add Printer" Command="{s:Action AddPrinter}" Grid.Row="7" Grid.Column="0" Margin="0,0,4,0"/>
                 <Button Content="Delete Printer" Command="{s:Action DeletePrinter}" Grid.Row="7" Grid.Column="1" Margin="0,0,4,0"/>
                 <Button Content="Add Department" Command="{s:Action AddDepartment}" Grid.Row="7" Grid.Column="2" Margin="0,0,4,0"/>
-                <Button Content="Add Location" Command="{s:Action AddLocation}" Grid.Row="7" Grid.Column="3" Margin="0,0,4,0" />
-                <Button Content="Button 1" Grid.Row="7" Grid.Column="4" Margin="0,0,4,0"/>
-                <Button Content="Button 1" Grid.Row="7" Grid.Column="5" Margin="0,0,4,0"/>
-                <Button Content="Button 1" Grid.Row="7" Grid.Column="6" Margin="0,0,4,0"/>
+                <Button Content="Delete Department" Command="{s:Action DeleteDepartment}" Grid.Row="7" Grid.Column="3" Margin="0,0,4,0"/>
+                <Button Content="Add Location" Command="{s:Action AddLocation}" Grid.Row="7" Grid.Column="4" Margin="0,0,4,0" />
+                <Button Content="Delete Location" Command="{s:Action DeleteLocation}" Grid.Row="7" Grid.Column="5" Margin="0,0,4,0"/>
+                <Button Content="Submit History" Command="{s:Action SubmitHistory}" Grid.Row="7" Grid.Column="6" Margin="0,0,4,0"/>
 
             </Grid>
 

@@ -132,25 +132,57 @@ namespace PLT.Pages
             }
         }
         public IEnumerable<Department> Departments => Locations.SelectMany(Location => Location.Departments);
-        
 
 
 
 
 
-        #region Action Creations
+        #region Can Execute Action Bools
         public bool CanAddLocation
         {
             get { return !string.IsNullOrEmpty(MainTextBoxInput) && !Locations.Any(x => x.LocationName == MainTextBoxInput); }
         }
         public bool CanAddDepartment
         {
-            get { return !string.IsNullOrEmpty(MainTextBoxInput) && !L1.Departments.Any(x => x.DepartmentName == MainTextBoxInput); }
+            get
+            {
+                if (SelectedLocation == null)
+                {
+                    return false;
+                }
+                else
+                {
+                    return !string.IsNullOrEmpty(MainTextBoxInput) && !SelectedLocation.Departments.Any(x => x.DepartmentName == MainTextBoxInput);
+                }
+            }
         }
         public bool CanAddPrinter
         {
-            get { return !D1.Printers.Any(x => x.WarrantyCode == WarrantyCodeTextBoxInput) && !string.IsNullOrEmpty(WarrantyCodeTextBoxInput); }
+            get 
+            {
+                if (SelectedDepartment == null)
+                {
+                    return false;
+                }
+                else
+                {
+                    return !D1.Printers.Any(x => x.WarrantyCode == WarrantyCodeTextBoxInput) && !string.IsNullOrEmpty(WarrantyCodeTextBoxInput);
+                }
+            }
         }
+        public bool CanDeleteLocation
+        {
+            get { return true; } ///Changing later
+        }
+        public bool CanDeleteDepartment
+        {
+            get { return true; } ///Changing later
+        }
+
+        #endregion
+
+
+        #region Action Creations
         public void AddLocation()
         {
             Locations.Add(new Location(MainTextBoxInput));
@@ -162,6 +194,7 @@ namespace PLT.Pages
             SelectedLocation.Departments.Add(new Department(MainTextBoxInput));
             NotifyOfPropertyChange(nameof(CanAddDepartment));
             NotifyOfPropertyChange(nameof(Departments));
+            SelectedDepartment = Departments.LastOrDefault();
         }
         public void AddPrinter()
         {
@@ -171,6 +204,16 @@ namespace PLT.Pages
                 NotifyOfPropertyChange(nameof(CanAddPrinter));
             }
         }
+        public void DeleteLocation() 
+        {
+            Locations.Remove(SelectedLocation);
+            SelectedLocation = Locations.LastOrDefault();
+        }
+        public void DeleteDepartment()
+        {
+            SelectedLocation.Departments.Remove(SelectedDepartment);
+            SelectedDepartment = SelectedLocation.Departments.LastOrDefault();
+        }
 
         #endregion
 
@@ -178,6 +221,7 @@ namespace PLT.Pages
         {
             this.DisplayName = "Printer Location Tracker";
             Locations = new ObservableCollection<Location>(){L1};
+            SelectedLocation = Locations.LastOrDefault();
         }
     }
 }
