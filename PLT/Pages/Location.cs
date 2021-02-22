@@ -20,14 +20,6 @@ namespace PLT.Pages
         }
 
 
-        private Department d1 = new Department("Department 1");
-        public Department D1
-        {
-            get { return d1; }
-            set { }
-        }
-
-
         private ObservableCollection<Department> departments;
         public ObservableCollection<Department> Departments
         {

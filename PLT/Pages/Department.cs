@@ -17,6 +17,7 @@ namespace PLT.Pages
             get { return departmentName; }
             set { departmentName = value; }
         }
+        
 
 
         private ObservableCollection<Printer> printers;

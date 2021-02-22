@@ -3,11 +3,16 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:s="https://github.com/canton7/Stylet"
         xmlns:local="clr-namespace:PLT.Pages"
+        xmlns:VI="clr-namespace:PLT.ViewInfrastructure"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance local:ShellViewModel}"
         Height="450" Width="800">
+
+
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height ="auto"/>
@@ -59,24 +64,29 @@
                 </Grid.RowDefinitions>
 
                 <TreeView x:Name="MainTreeView" Grid.Row="0" Margin="1,1,0,1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding Locations}">
-                <TreeView.ItemTemplate>
-                    <HierarchicalDataTemplate ItemsSource="{Binding Departments}">
-                        <Label Content="{Binding LocationName}" />
-                        <HierarchicalDataTemplate.ItemTemplate>
-                            <HierarchicalDataTemplate ItemsSource="{Binding Printers}">
-                                <Label Content="{Binding DepartmentName}" />
-                                <HierarchicalDataTemplate.ItemTemplate>
-                                    <DataTemplate>
-                                        <Label Content="{Binding WarrantyCode}" />
-                                    </DataTemplate>
-                                </HierarchicalDataTemplate.ItemTemplate>
-                            </HierarchicalDataTemplate>
-                        </HierarchicalDataTemplate.ItemTemplate>
-                    </HierarchicalDataTemplate>
-                </TreeView.ItemTemplate>
-            </TreeView>
+                    <i:Interaction.Behaviors>
+                        <VI:SelectedTreeViewItemBehavior SelectedItem="{Binding SelectedItem}"/>
+                    </i:Interaction.Behaviors>
+                    <TreeView.ItemTemplate>
+                        <HierarchicalDataTemplate ItemsSource="{Binding Departments}">
+                            <Label Content="{Binding LocationName}" />
+                            <HierarchicalDataTemplate.ItemTemplate>
+                                <HierarchicalDataTemplate ItemsSource="{Binding Printers}">
+                                    <Label Content="{Binding DepartmentName}" />
+                                    <HierarchicalDataTemplate.ItemTemplate>
+                                        <DataTemplate>
+                                            <Label Content="{Binding WarrantyCode}" />
+                                        </DataTemplate>
+                                    </HierarchicalDataTemplate.ItemTemplate>
+                                </HierarchicalDataTemplate>
+                            </HierarchicalDataTemplate.ItemTemplate>
+                        </HierarchicalDataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>
 
-                <TextBox Grid.Row="1" Margin="1,1,0,1" x:Name ="Searchbox" Text="{Binding Path=Searchbox, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox Grid.Row="1" Margin="1,1,0,1" x:Name ="Searchbox" Text="{Binding Path=SelectedTreeviewItem, UpdateSourceTrigger=PropertyChanged}" />
+            
+            
             </Grid>
                 
             <GridSplitter Width="40" Grid.Column="1" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch"/>
@@ -103,7 +113,7 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
-                <TextBox x:Name="MainTextBox" Text="{Binding Path=MainTextBoxInput, UpdateSourceTrigger=PropertyChanged}" TabIndex="0" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="7"  Margin="2"/>
+                <TextBox x:Name="MainTextBox" Text="{Binding Path=ActiveMain, UpdateSourceTrigger=PropertyChanged}" TabIndex="0" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="7"  Margin="2"/>
 
 
                 <Label Content="Location" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"/>
@@ -113,16 +123,16 @@
                 <ComboBox x:Name ="DepartmentComboBox" SelectedItem="{Binding Path=SelectedDepartment}" ItemsSource="{Binding Path=SelectedLocation.Departments}" DisplayMemberPath="DepartmentName"  TabIndex="2" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="7" Margin="2"/>
 
                 <Label Content="Warranty Code" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"/>
-                <TextBox x:Name ="WarrantyCodeTextBox" Text="{Binding Path=WarrantyCodeTextBoxInput, UpdateSourceTrigger=PropertyChanged}" TabIndex="3" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="6"  Margin="2"/>
+                <TextBox x:Name ="WarrantyCodeTextBox" Text="{Binding Path=ActiveWarrantyCode, UpdateSourceTrigger=PropertyChanged}" TabIndex="3" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="6"  Margin="2"/>
 
                 <Label Content="Model" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"/>
-                <TextBox x:Name ="ModelTextBox" Text="{Binding Path=ModelTextBoxInput, UpdateSourceTrigger=PropertyChanged, FallbackValue='Model Not Specified' }" TabIndex="4" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="7" Margin="2"/>
+                <TextBox x:Name ="ModelTextBox" Text="{Binding Path=ActiveModel, UpdateSourceTrigger=PropertyChanged, FallbackValue='Model Not Specified' }" TabIndex="4" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="7" Margin="2"/>
 
                 <Label Content="IP Address"  Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"/>
-                <TextBox x:Name ="IPTextBox" Text="{Binding Path=IPTextBoxInput, UpdateSourceTrigger=PropertyChanged, FallbackValue='No Specified IP Address'}" TabIndex="5" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="7" Margin="2" />
+                <TextBox x:Name ="IPTextBox" Text="{Binding Path=ActiveIP, UpdateSourceTrigger=PropertyChanged, FallbackValue='No Specified IP Address'}" TabIndex="5" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="7" Margin="2" />
 
                 <Label Content="Ticket History" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2"/>
-                <TextBox x:Name ="TicketHistoryTextBox" Text="{Binding Path=TicketHistoryTextBoxInput, UpdateSourceTrigger=PropertyChanged}" TabIndex="6" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="6" Margin="2"/>
+                <TextBox x:Name ="TicketHistoryTextBox" Text="{Binding Path=ActiveTicketHistory, UpdateSourceTrigger=PropertyChanged}" TabIndex="6" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="6" Margin="2"/>
 
 
                 <Button Content="Add Printer" Command="{s:Action AddPrinter}" Grid.Row="7" Grid.Column="0" Margin="0,0,4,0"/>

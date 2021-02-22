@@ -22,80 +22,78 @@ namespace PLT.Pages
             get { return d1; }
             set { }
         }
-        
+
         private Printer p1 = new Printer("Warrenty Code 1", "P1", "P1", "P1", "P1");
         #endregion
 
         #region Databinding input text boxs
-        private string _mainTextBoxInput;
-        public string MainTextBoxInput
+        private string _activeMain;
+        public string ActiveMain
         {
-            get { return _mainTextBoxInput; }
+            get { return _activeMain; }
             set
             {
-                SetAndNotify(ref this._mainTextBoxInput, value);
+                SetAndNotify(ref this._activeMain, value);
                 NotifyOfPropertyChange(nameof(CanAddLocation));
                 NotifyOfPropertyChange(nameof(CanAddDepartment));
             }
         }
-        private string _warrantyCodeTextBoxInput;
-        public string WarrantyCodeTextBoxInput
+        private string _activeWarrantyCode;
+        public string ActiveWarrantyCode
         {
-            get {return _warrantyCodeTextBoxInput; }
+            get {return _activeWarrantyCode; }
             set
             {
-                SetAndNotify(ref this._warrantyCodeTextBoxInput, value);
+                SetAndNotify(ref this._activeWarrantyCode, value);
                 NotifyOfPropertyChange(nameof(CanAddPrinter));
             }
         }
-        private string _modelTextBoxInput;
-        public string ModelTextBoxInput
+        private string _activeModel;
+        public string ActiveModel
         {
-            get { return _modelTextBoxInput; }
+            get { return _activeModel; }
             set
             {
-                SetAndNotify(ref this._modelTextBoxInput, value);
+                SetAndNotify(ref this._activeModel, value);
                 NotifyOfPropertyChange(nameof(CanAddPrinter));
             }
         }
-        private string _departmentComboBox;
-        public string DepartmentComboBox
+        private string _activeDepartment;
+        public string ActiveDepartment
         {
-            get { return _departmentComboBox; }
+            get { return _activeDepartment; }
             set
             {
-                SetAndNotify(ref this._departmentComboBox, value);
+                SetAndNotify(ref this._activeDepartment, value);
                 NotifyOfPropertyChange(nameof(CanAddPrinter));
             }
         }
-        private string _locationComboBoxInput;
-        public string LocationComboBoxInput
+        private string _activeLocation;
+        public string ActiveLocation
         {
-            get { return _locationComboBoxInput; }
+            get { return _activeLocation; }
             set
             {
-                SetAndNotify(ref this._locationComboBoxInput, value);
+                SetAndNotify(ref this._activeLocation, value);
                 NotifyOfPropertyChange(nameof(CanAddPrinter));
             }
         }
-        private string _ipTextBoxInput;
-        public string IPTextBoxInput
+        private string _activeIP;
+        public string ActiveIP
         {
-            get { return _ipTextBoxInput; }
+            get { return _activeIP; }
             set
             {
-                SetAndNotify(ref this._ipTextBoxInput, value);
+                SetAndNotify(ref this._activeIP, value);
                 NotifyOfPropertyChange(nameof(CanAddPrinter));
             }
         }
-        public string TicketHistoryTextBoxInput
+        public string ActiveTicketHistory
         {
             get;
             set;
         }
         #endregion
-
-
 
 
         private Location _selectedLocation;
@@ -110,6 +108,8 @@ namespace PLT.Pages
                 NotifyOfPropertyChange(nameof(CanAddPrinter));
             }
         }
+
+
         private ObservableCollection<Location> locations;
         public ObservableCollection<Location> Locations
         {
@@ -137,10 +137,58 @@ namespace PLT.Pages
 
 
 
+        private object _selectedItem;
+        public object SelectedItem
+        {
+            get { return _selectedItem; }
+            set
+            {
+                if (SetAndNotify(ref this._selectedItem, value)) 
+                {
+                    ActivateItemDetails(_selectedItem);
+                    NotifyOfPropertyChange(nameof(CanAddLocation));
+                    NotifyOfPropertyChange(nameof(CanAddDepartment));
+                    NotifyOfPropertyChange(nameof(CanAddPrinter));
+                }
+            }
+        }
+
+        private void ActivateItemDetails(object item)
+        {
+            if (item is Location location)
+            {
+                ActiveLocation = location.LocationName;
+                SelectedLocation = location;
+                SelectedDepartment = null;
+                ActiveWarrantyCode = null;
+                ActiveModel = null;
+                ActiveIP = null;
+            }
+            else if (item is Department department)
+            {
+                ActiveDepartment = department.DepartmentName;
+                //SelectedLocation = ;
+                SelectedDepartment = department;
+                ActiveWarrantyCode = null;
+                ActiveModel = null;
+                ActiveIP = null;
+            }
+            else if (item is Printer printer) 
+            {
+                ActiveLocation = printer.Location;
+                ActiveDepartment = printer.Department;
+                ActiveWarrantyCode = printer.WarrantyCode;
+                ActiveModel = printer.Model;
+                ActiveIP = printer.Ip;
+            }
+        }
+
+
+
         #region Can Execute Action Bools
         public bool CanAddLocation
         {
-            get { return !string.IsNullOrEmpty(MainTextBoxInput) && !Locations.Any(x => x.LocationName == MainTextBoxInput); }
+            get { return !string.IsNullOrEmpty(ActiveMain) && !Locations.Any(x => x.LocationName == ActiveMain); }
         }
         public bool CanAddDepartment
         {
@@ -152,7 +200,7 @@ namespace PLT.Pages
                 }
                 else
                 {
-                    return !string.IsNullOrEmpty(MainTextBoxInput) && !SelectedLocation.Departments.Any(x => x.DepartmentName == MainTextBoxInput);
+                    return !string.IsNullOrEmpty(ActiveMain) && !SelectedLocation.Departments.Any(x => x.DepartmentName == ActiveMain);
                 }
             }
         }
@@ -166,7 +214,7 @@ namespace PLT.Pages
                 }
                 else
                 {
-                    return !D1.Printers.Any(x => x.WarrantyCode == WarrantyCodeTextBoxInput) && !string.IsNullOrEmpty(WarrantyCodeTextBoxInput);
+                    return !D1.Printers.Any(x => x.WarrantyCode == ActiveWarrantyCode) && !string.IsNullOrEmpty(ActiveWarrantyCode);
                 }
             }
         }
@@ -185,13 +233,13 @@ namespace PLT.Pages
         #region Action Creations
         public void AddLocation()
         {
-            Locations.Add(new Location(MainTextBoxInput));
+            Locations.Add(new Location(ActiveMain));
             NotifyOfPropertyChange(nameof(CanAddLocation));
             NotifyOfPropertyChange(nameof(Locations));
         }
         public void AddDepartment()
         {
-            SelectedLocation.Departments.Add(new Department(MainTextBoxInput));
+            SelectedLocation.Departments.Add(new Department(ActiveMain));
             NotifyOfPropertyChange(nameof(CanAddDepartment));
             NotifyOfPropertyChange(nameof(Departments));
             SelectedDepartment = Departments.LastOrDefault();
@@ -200,7 +248,7 @@ namespace PLT.Pages
         {
             if (SelectedDepartment != null)
             {
-                SelectedDepartment.Printers.Add(new Printer(WarrantyCodeTextBoxInput, ModelTextBoxInput, LocationComboBoxInput, IPTextBoxInput, DepartmentComboBox));
+                SelectedDepartment.Printers.Add(new Printer(ActiveWarrantyCode, ActiveModel, ActiveLocation, ActiveIP, ActiveDepartment));
                 NotifyOfPropertyChange(nameof(CanAddPrinter));
             }
         }
@@ -222,6 +270,7 @@ namespace PLT.Pages
             this.DisplayName = "Printer Location Tracker";
             Locations = new ObservableCollection<Location>(){L1};
             SelectedLocation = Locations.LastOrDefault();
+            
         }
     }
 }
