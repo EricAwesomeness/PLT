@@ -12,12 +12,16 @@ namespace PLT.Pages
     {
 
         private string departmentName = string.Empty;
+
+
         public string DepartmentName
         {
             get { return departmentName; }
             set { departmentName = value; }
         }
-        
+
+
+
 
 
         private ObservableCollection<Printer> printers;
@@ -27,12 +31,6 @@ namespace PLT.Pages
             set { printers = value; }
         }
         
-        private Printer p1 = new Printer("Warrenty Code 1", "P1", "P1", "P1", "P1");
-        public Printer P1
-        {
-            get { return p1; }
-            set { }
-        }
 
 
         public Department(string departmentName)

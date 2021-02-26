@@ -23,7 +23,7 @@ namespace PLT.Pages
             set { }
         }
 
-        private Printer p1 = new Printer("Warrenty Code 1", "P1", "P1", "P1", "P1");
+        private Printer p1 = new Printer("Warrenty Code 1", "P1", "P1");
         #endregion
 
         #region Databinding input text boxs
@@ -152,7 +152,6 @@ namespace PLT.Pages
                 }
             }
         }
-
         private void ActivateItemDetails(object item)
         {
             if (item is Location location)
@@ -163,20 +162,33 @@ namespace PLT.Pages
                 ActiveWarrantyCode = null;
                 ActiveModel = null;
                 ActiveIP = null;
+                
             }
             else if (item is Department department)
             {
+                foreach (var Ltion in Locations.Where(x => x.Departments.Contains(department))) 
+                {
+                    SelectedLocation = Ltion;
+                } 
                 ActiveDepartment = department.DepartmentName;
-                //SelectedLocation = ;
                 SelectedDepartment = department;
                 ActiveWarrantyCode = null;
                 ActiveModel = null;
                 ActiveIP = null;
+
+                
             }
             else if (item is Printer printer) 
             {
-                ActiveLocation = printer.Location;
-                ActiveDepartment = printer.Department;
+                // ActiveLocation = printer.Location;
+                foreach (var Dment in Departments.Where(x => x.Printers.Contains(printer)))
+                {
+                    SelectedDepartment = Dment;
+                    foreach (var Ltion in Locations.Where(x => x.Departments.Contains(Dment)))
+                    {
+                        SelectedLocation = Ltion;
+                    }
+                }
                 ActiveWarrantyCode = printer.WarrantyCode;
                 ActiveModel = printer.Model;
                 ActiveIP = printer.Ip;
@@ -226,6 +238,10 @@ namespace PLT.Pages
         {
             get { return true; } ///Changing later
         }
+        public bool CanDeletePrinter
+        {
+            get { return true; } ///Changing later
+        }
 
         #endregion
 
@@ -248,7 +264,7 @@ namespace PLT.Pages
         {
             if (SelectedDepartment != null)
             {
-                SelectedDepartment.Printers.Add(new Printer(ActiveWarrantyCode, ActiveModel, ActiveLocation, ActiveIP, ActiveDepartment));
+                SelectedDepartment.Printers.Add(new Printer(ActiveWarrantyCode, ActiveModel, ActiveIP));
                 NotifyOfPropertyChange(nameof(CanAddPrinter));
             }
         }
@@ -260,6 +276,11 @@ namespace PLT.Pages
         public void DeleteDepartment()
         {
             SelectedLocation.Departments.Remove(SelectedDepartment);
+            SelectedDepartment = SelectedLocation.Departments.LastOrDefault();
+        }
+        public void DeletePrinter()
+        {
+            SelectedDepartment.Printers.Remove((Printer)SelectedItem);
             SelectedDepartment = SelectedLocation.Departments.LastOrDefault();
         }
 
