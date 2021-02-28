@@ -47,7 +47,7 @@
             </TreeView>
 
             <Button Height="25" Width="25" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5" Background="Transparent" Command="{s:Action EditView}">
-                <Image Source="C:\Users\eric.butler\source\repos\PLT\PLT\ViewInfrastructure\edit.png"/>
+                <Image Source="https://www.pngfind.com/pngs/m/275-2755033_edit-png-file-on-phone-svg-edit-icon.png"/>
             </Button>
 
             <TextBox Grid.Row="1" Margin="1,1,0,1" x:Name ="Searchbox" Text="{Binding Path=SelectedTreeviewItem, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0"/>
