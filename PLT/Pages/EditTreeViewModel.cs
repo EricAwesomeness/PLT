@@ -124,8 +124,38 @@ namespace PLT.Pages
             }
         }
 
+        private Printer selectedPrinter;
+        public Printer SelectedPrinter 
+        {
+            get { return selectedPrinter; }
+            set
+            {
+                SetAndNotify(ref this.selectedPrinter, value);
+                NotifyOfPropertyChange(nameof(CanAddLocation));
+                NotifyOfPropertyChange(nameof(CanAddDepartment));
+                NotifyOfPropertyChange(nameof(CanAddPrinter));
+            }
+        }
 
-        #region Can Execute Action Bools
+
+
+        private ObservableCollection<Location> locations;
+        public ObservableCollection<Location> Locations
+        {
+            get { return locations; }
+            set 
+            {
+                locations = value;
+            }
+        }
+
+
+
+
+        public IEnumerable<Department> Departments => Locations.SelectMany(Location => Location.Departments);
+
+
+        #region Action Methods
         public bool CanAddLocation
         {
             get { return !string.IsNullOrEmpty(ActiveMain) && !Locations.Any(x => x.LocationName == ActiveMain); }
@@ -171,76 +201,6 @@ namespace PLT.Pages
             get { return true; } ///Changing later
         }
 
-
-        #endregion
-
-        private ObservableCollection<Location> locations;
-        public ObservableCollection<Location> Locations
-        {
-            get { return locations; }
-            set { locations = value; }
-        }
-
-        private object _selectedItem;
-        public object SelectedItem
-        {
-            get { return _selectedItem; }
-            set
-            {
-                if (SetAndNotify(ref this._selectedItem, value))
-                {
-                    ActivateItemDetails(_selectedItem);
-                    NotifyOfPropertyChange(nameof(CanAddLocation));
-                    NotifyOfPropertyChange(nameof(CanAddDepartment));
-                    NotifyOfPropertyChange(nameof(CanAddPrinter));
-                }
-            }
-        }
-        private void ActivateItemDetails(object item)
-        {
-            if (item is Location location)
-            {
-                ActiveLocation = location.LocationName;
-                SelectedLocation = location;
-                SelectedDepartment = null;
-                ActiveWarrantyCode = null;
-                ActiveModel = null;
-                ActiveIP = null;
-
-            }
-            else if (item is Department department)
-            {
-                foreach (var Ltion in Locations.Where(x => x.Departments.Contains(department)))
-                {
-                    SelectedLocation = Ltion;
-                }
-                ActiveDepartment = department.DepartmentName;
-                SelectedDepartment = department;
-                ActiveWarrantyCode = null;
-                ActiveModel = null;
-                ActiveIP = null;
-
-
-            }
-            else if (item is Printer printer)
-            {
-                foreach (var Dment in Departments.Where(x => x.Printers.Contains(printer)))
-                {
-                    SelectedDepartment = Dment;
-                    foreach (var Ltion in Locations.Where(x => x.Departments.Contains(Dment)))
-                    {
-                        SelectedLocation = Ltion;
-                    }
-                }
-                ActiveWarrantyCode = printer.WarrantyCode;
-                ActiveModel = printer.Model;
-                ActiveIP = printer.Ip;
-            }
-        }
-
-        public IEnumerable<Department> Departments => Locations.SelectMany(Location => Location.Departments);
-
-
         public void AddLocation()
         {
             Locations.Add(new Location(ActiveMain));
@@ -274,13 +234,14 @@ namespace PLT.Pages
         }
         public void DeletePrinter()
         {
-            SelectedDepartment.Printers.Remove((Printer)SelectedItem);
+            SelectedDepartment.Printers.Remove((Printer)SelectedPrinter);
             SelectedDepartment = SelectedLocation.Departments.LastOrDefault();
         }
         public void ChangeView() 
         {
            
         }
+        #endregion
 
         public EditTreeViewModel() 
         {

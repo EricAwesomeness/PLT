@@ -10,12 +10,76 @@ namespace PLT.Pages
 {
     public class ViewTreeViewModel : Screen
     {
-        EditTreeViewModel EditTreeVM = new EditTreeViewModel();
-        public ObservableCollection<Location> Locations
+        private EditTreeViewModel editTreeVM = new EditTreeViewModel();
+        public EditTreeViewModel EditTreeVM
         {
-            get { return EditTreeVM.Locations; }
-            private set { }
+            get { return editTreeVM; }
+            set { SetAndNotify(ref this.editTreeVM, value); }
         }
+
+
+        #region Databinding input text boxs
+        private string _activeMain;
+        public string ActiveMain
+        {
+            get { return _activeMain; }
+            set
+            {
+                SetAndNotify(ref this._activeMain, value);
+            }
+        }
+        private string _activeWarrantyCode;
+        public string ActiveWarrantyCode
+        {
+            get { return _activeWarrantyCode; }
+            set
+            {
+                SetAndNotify(ref this._activeWarrantyCode, value);
+            }
+        }
+        private string _activeModel;
+        public string ActiveModel
+        {
+            get { return _activeModel; }
+            set
+            {
+                SetAndNotify(ref this._activeModel, value);
+            }
+        }
+        private string _activeDepartment;
+        public string ActiveDepartment
+        {
+            get { return _activeDepartment; }
+            set
+            {
+                SetAndNotify(ref this._activeDepartment, value);
+            }
+        }
+        private string _activeLocation;
+        public string ActiveLocation
+        {
+            get { return _activeLocation; }
+            set
+            {
+                SetAndNotify(ref this._activeLocation, value);
+            }
+        }
+        private string _activeIP;
+        public string ActiveIP
+        {
+            get { return _activeIP; }
+            set
+            {
+                SetAndNotify(ref this._activeIP, value);
+            }
+        }
+        public string ActiveTicketHistory
+        {
+            get;
+            set;
+        }
+        #endregion
+
         private Location _selectedLocation;
         public Location SelectedLocation
         {
@@ -36,6 +100,17 @@ namespace PLT.Pages
             }
         }
 
+        private Printer selectedPrinter;
+        public Printer SelectedPrinter
+        {
+            get { return selectedPrinter; }
+            set
+            {
+                SetAndNotify(ref this.selectedPrinter, value);
+            }
+        }
+
+
         public void EditView()
         {
             ///Logic Required to Deactivate this and Activate EditTreeViewModel
@@ -45,7 +120,7 @@ namespace PLT.Pages
 
         public ViewTreeViewModel()
         {
-            SelectedLocation = Locations.LastOrDefault();
+           
         }
 
     }

@@ -11,6 +11,40 @@
         d:DataContext="{d:DesignInstance local:ShellViewModel}"
         Height="450" Width="800">
 
+
+
+
+    <Window.Resources>
+        <Style x:Key="EditButtonStyle" TargetType="Button">
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Height" Value="25"/>
+            <Setter Property="Width" Value="25"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Background">
+                <Setter.Value>
+                    <ImageBrush ImageSource="\ViewInfrastructure\Images\editcheckstill.png"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <ImageBrush ImageSource="\ViewInfrastructure\Images\editcheck.gif"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height ="auto"/>
@@ -48,11 +82,55 @@
 
         </Image>
 
-        <ContentControl s:View.Model="{Binding ActiveItem}" Grid.Row="2"/>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="4*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="20"/>
+                </Grid.RowDefinitions>
+
+                <TreeView x:Name="MainTreeView" Grid.Row="0" Margin="1,1,0,1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding EditTreeVM.Locations}">
+                    <i:Interaction.Behaviors>
+                        <VI:SelectedTreeViewItemBehavior SelectedItem="{Binding SelectedItem}"/>
+                    </i:Interaction.Behaviors>
+                    <TreeView.ItemTemplate>
+                        <HierarchicalDataTemplate ItemsSource="{Binding Departments}">
+                            <Label Content="{Binding LocationName}" />
+                            <HierarchicalDataTemplate.ItemTemplate>
+                                <HierarchicalDataTemplate ItemsSource="{Binding Printers}">
+                                    <Label Content="{Binding DepartmentName}" />
+                                    <HierarchicalDataTemplate.ItemTemplate>
+                                        <DataTemplate>
+                                            <Label Content="{Binding WarrantyCode}" />
+                                        </DataTemplate>
+                                    </HierarchicalDataTemplate.ItemTemplate>
+                                </HierarchicalDataTemplate>
+                            </HierarchicalDataTemplate.ItemTemplate>
+                        </HierarchicalDataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>
+
+                <TextBox Grid.Row="1" Margin="1,1,0,1" x:Name ="Searchbox" Text="{Binding Path=SelectedTreeviewItem, UpdateSourceTrigger=PropertyChanged}" />
+
+                <Button Command="{s:Action ChangeView}" Style="{StaticResource EditButtonStyle}"/>
+
+            </Grid>
+
+            <GridSplitter Width="40" Grid.Column="1" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch"/>
+
+
+            <!--View Models Switch Here-->
+            <ContentControl s:View.Model="{Binding ActiveItem}" Grid.Column="2"/>
+
+        </Grid>
 
         <StatusBar Grid.Row="3"/>
 
     </Grid>
-
-
 </Window>

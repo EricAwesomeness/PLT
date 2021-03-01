@@ -12,50 +12,7 @@
              d:DesignHeight="450" d:DesignWidth="800" >
 
     <Grid Background="White">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="5"/>
-            <ColumnDefinition Width="4*"/>
-        </Grid.ColumnDefinitions>
-
-        <Grid Grid.Column="0">
-
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition Height="20"/>
-            </Grid.RowDefinitions>
-
-            <TreeView x:Name="MainTreeView" Grid.Row="0" Margin="1,1,0,1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding Locations}">
-                <i:Interaction.Behaviors>
-                    <VI:SelectedTreeViewItemBehavior SelectedItem="{Binding SelectedItem}"/>
-                </i:Interaction.Behaviors>
-                <TreeView.ItemTemplate>
-                    <HierarchicalDataTemplate ItemsSource="{Binding Departments}">
-                        <Label Content="{Binding LocationName}" />
-                        <HierarchicalDataTemplate.ItemTemplate>
-                            <HierarchicalDataTemplate ItemsSource="{Binding Printers}">
-                                <Label Content="{Binding DepartmentName}" />
-                                <HierarchicalDataTemplate.ItemTemplate>
-                                    <DataTemplate>
-                                        <Label Content="{Binding WarrantyCode}" />
-                                    </DataTemplate>
-                                </HierarchicalDataTemplate.ItemTemplate>
-                            </HierarchicalDataTemplate>
-                        </HierarchicalDataTemplate.ItemTemplate>
-                    </HierarchicalDataTemplate>
-                </TreeView.ItemTemplate>
-            </TreeView>
-
-            <Button Height="25" Width="25" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5" Background="Transparent" Command="{s:Action EditView}">
-                <Image Source="https://www.pngfind.com/pngs/m/275-2755033_edit-png-file-on-phone-svg-edit-icon.png"/>
-            </Button>
-
-            <TextBox Grid.Row="1" Margin="1,1,0,1" x:Name ="Searchbox" Text="{Binding Path=SelectedTreeviewItem, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0"/>
-
-        </Grid>
-
-        <GridSplitter Width="40" Grid.Column="1" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch"/>
-
+        
         <Grid Grid.Column="2">
             <Grid.RowDefinitions>
                     <RowDefinition Height="25"/>
