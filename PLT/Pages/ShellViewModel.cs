@@ -22,7 +22,16 @@ namespace PLT.Pages
             set { SetAndNotify(ref this.viewTreeVM, value); }
         }
 
-
+        public string _activeSearchItem;
+        public string ActiveSearchItem
+        {
+            get { return _activeSearchItem; }
+            set
+            {
+                SetAndNotify(ref this._activeSearchItem, value);
+                NotifyOfPropertyChange(nameof(Search));
+            }
+        }
 
         private object _selectedItem;
         public object SelectedItem
@@ -36,6 +45,7 @@ namespace PLT.Pages
                     NotifyOfPropertyChange(nameof(EditTreeVM.CanAddLocation));
                     NotifyOfPropertyChange(nameof(EditTreeVM.CanAddDepartment));
                     NotifyOfPropertyChange(nameof(EditTreeVM.CanAddPrinter));
+                    NotifyOfPropertyChange(nameof(Search));
                 }
             }
         }
@@ -52,12 +62,12 @@ namespace PLT.Pages
 
                 ViewTreeVM.ActiveLocation = location.LocationName;
                 ViewTreeVM.SelectedLocation = location;
+                ViewTreeVM.ActiveDepartment = null;
                 ViewTreeVM.SelectedDepartment = null;
+                ViewTreeVM.SelectedPrinter = null;
                 ViewTreeVM.ActiveWarrantyCode = null;
                 ViewTreeVM.ActiveModel = null;
                 ViewTreeVM.ActiveIP = null;
-
-
             }
             else if (item is Department department)
             {
@@ -74,6 +84,7 @@ namespace PLT.Pages
                 ViewTreeVM.ActiveDepartment = department.DepartmentName;
                 ViewTreeVM.SelectedDepartment = department;
                 ViewTreeVM.ActiveWarrantyCode = null;
+                ViewTreeVM.SelectedPrinter = null;
                 ViewTreeVM.ActiveModel = null;
                 ViewTreeVM.ActiveIP = null;
 
@@ -99,10 +110,9 @@ namespace PLT.Pages
                 ViewTreeVM.ActiveModel = printer.Model;
                 ViewTreeVM.ActiveIP = printer.Ip;
                 ViewTreeVM.SelectedPrinter = printer;
-
+                ViewTreeVM.ActiveTicketHistory = printer.TicketHistory;
             }
         }
-
 
         public void ChangeView()
         {
@@ -116,6 +126,21 @@ namespace PLT.Pages
                 ActiveItem = ViewTreeVM;
             }
             
+        }
+        public void Search() 
+        {
+            if (EditTreeVM.Locations.Any(g => g.LocationName == ActiveSearchItem))  
+            {
+                SelectedItem = EditTreeVM.Locations.Where(g => g.LocationName == ActiveSearchItem);
+            }
+            else if (EditTreeVM.Departments.Any(g => g.DepartmentName == ActiveSearchItem))
+            {
+                SelectedItem = EditTreeVM.Departments.Where(g => g.DepartmentName == ActiveSearchItem);
+            }
+            else if (EditTreeVM.Printers.Any(g => g.WarrantyCode == ActiveSearchItem)) 
+            {
+                SelectedItem = EditTreeVM.Printers.Where(g => g.WarrantyCode == ActiveSearchItem);
+            }
         }
 
         public ShellViewModel()

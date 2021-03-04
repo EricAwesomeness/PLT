@@ -148,11 +148,9 @@ namespace PLT.Pages
                 locations = value;
             }
         }
-
-
-
-
         public IEnumerable<Department> Departments => Locations.SelectMany(Location => Location.Departments);
+        public IEnumerable<Printer> Printers => Departments.SelectMany(Department => Department.Printers);
+
 
 
         #region Action Methods
@@ -184,7 +182,7 @@ namespace PLT.Pages
                 }
                 else
                 {
-                    return !D1.Printers.Any(x => x.WarrantyCode == ActiveWarrantyCode) && !string.IsNullOrEmpty(ActiveWarrantyCode);
+                    return !SelectedDepartment.Printers.Any(x => x.WarrantyCode == ActiveWarrantyCode) && !string.IsNullOrEmpty(ActiveWarrantyCode);
                 }
             }
         }

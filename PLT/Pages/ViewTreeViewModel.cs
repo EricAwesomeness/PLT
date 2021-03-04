@@ -18,6 +18,7 @@ namespace PLT.Pages
         }
 
 
+
         #region Databinding input text boxs
         private string _activeMain;
         public string ActiveMain
@@ -73,10 +74,14 @@ namespace PLT.Pages
                 SetAndNotify(ref this._activeIP, value);
             }
         }
+        private string _activeTicketHistory;
         public string ActiveTicketHistory
         {
-            get;
-            set;
+            get { return _activeTicketHistory; }
+            set
+            {
+                SetAndNotify(ref this._activeTicketHistory, value);
+            }
         }
         #endregion
 
@@ -107,13 +112,23 @@ namespace PLT.Pages
             set
             {
                 SetAndNotify(ref this.selectedPrinter, value);
+                NotifyOfPropertyChange(nameof(CanAddNote));
             }
         }
 
-
-        public void EditView()
+        
+        public bool CanAddNote 
         {
-            ///Logic Required to Deactivate this and Activate EditTreeViewModel
+            get { 
+            if (SelectedPrinter == null) 
+                {return false;} 
+            else 
+                {return true;}
+            ;}
+        }
+        public void AddNote() 
+        {
+            SelectedPrinter.TicketHistory = ActiveMain;
         }
 
 

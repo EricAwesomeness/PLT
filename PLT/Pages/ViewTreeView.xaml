@@ -22,7 +22,7 @@
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="25"/>
                     <RowDefinition Height="50*"/>
-                    <RowDefinition Height="50*"/>
+                    <RowDefinition Height="50"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100"/>
@@ -38,7 +38,7 @@
                 <Label x:Name ="LocationComboBox" Content="{Binding Path=SelectedLocation.LocationName}" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="6" Margin="2" />
 
                 <Label Content="Department" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"/>
-                <Label x:Name ="DepartmentComboBox" Content="{Binding Path=SelectedDepartment}" TabIndex="2" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="7" Margin="2"/>
+                <Label x:Name ="DepartmentComboBox" Content="{Binding Path=ActiveDepartment}" TabIndex="2" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="7" Margin="2"/>
 
                 <Label Content="Warranty Code" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"/>
                 <Label x:Name ="WarrantyCodeTextBox" Content="{Binding Path=ActiveWarrantyCode, UpdateSourceTrigger=PropertyChanged}" TabIndex="3" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="6"  Margin="2"/>
@@ -50,7 +50,10 @@
                 <Label x:Name ="IPTextBox" Content="{Binding Path=ActiveIP, UpdateSourceTrigger=PropertyChanged}" TabIndex="5" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="7" Margin="2" />
 
                 <Label Content="Ticket History" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"/>
-                <Label x:Name ="TicketHistoryTextBox" Content="{Binding Path=ActiveTicketHistory, UpdateSourceTrigger=PropertyChanged}" TabIndex="6" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="7" Grid.RowSpan="3" Margin="2"/>
+                <Label x:Name ="TicketHistoryTextBox" Content="{Binding Path=ActiveTicketHistory, UpdateSourceTrigger=PropertyChanged}" TabIndex="6" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="7" Grid.RowSpan="2" Margin="2"/>
+
+                <TextBox Text="{Binding ActiveMain}" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="5" Margin="2"/>
+                <Button Content="Add Note" Command="{s:Action AddNote}" Grid.Row="8" Grid.Column="5" Grid.ColumnSpan="2" Margin="4"/>
             </Grid>
         </Grid>
     </Grid>
