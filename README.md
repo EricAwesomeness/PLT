@@ -1,4 +1,4 @@
 # PLT
 Printer Location Tracker
 
-Created using C3 WPF and the Stylet Framework 
+Created using C# WPF and the Stylet Framework 
