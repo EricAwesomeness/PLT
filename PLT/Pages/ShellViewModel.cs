@@ -5,137 +5,37 @@ using System.Linq;
 
 namespace PLT.Pages
 {
-    public class ShellViewModel : Screen
+    public class ShellViewModel : Conductor<IScreen>.Collection.OneActive
     {
 
-        #region Instantiating D1 Department; L1 Location; P1 Printer
-        private Location l1 = new Location("Location 1");
-        public Location L1
+        private EditTreeViewModel editTreeVM = new EditTreeViewModel();
+        public EditTreeViewModel EditTreeVM
         {
-            get { return l1; }
-            set { }
+            get {return editTreeVM; }
+            set { SetAndNotify(ref this.editTreeVM, value); }
         }
 
-        private Department d1 = new Department("Department 1");
-        public Department D1
+        private ViewTreeViewModel viewTreeVM = new ViewTreeViewModel();
+        public ViewTreeViewModel ViewTreeVM
         {
-            get { return d1; }
-            set { }
+            get { return viewTreeVM; }
+            set { SetAndNotify(ref this.viewTreeVM, value); }
         }
 
-        private Printer p1 = new Printer("Warrenty Code 1", "P1", "P1");
-        #endregion
-
-        #region Databinding input text boxs
-        private string _activeMain;
-        public string ActiveMain
+        public string _activeSearchItem;
+        public string ActiveSearchItem
         {
-            get { return _activeMain; }
+            get { return _activeSearchItem; }
             set
             {
-                SetAndNotify(ref this._activeMain, value);
-                NotifyOfPropertyChange(nameof(CanAddLocation));
-                NotifyOfPropertyChange(nameof(CanAddDepartment));
+                if (SetAndNotify(ref this._activeSearchItem, value)) 
+                {
+                    Search();
+                    NotifyOfPropertyChange(nameof(Search));
+                };
+                
             }
         }
-        private string _activeWarrantyCode;
-        public string ActiveWarrantyCode
-        {
-            get {return _activeWarrantyCode; }
-            set
-            {
-                SetAndNotify(ref this._activeWarrantyCode, value);
-                NotifyOfPropertyChange(nameof(CanAddPrinter));
-            }
-        }
-        private string _activeModel;
-        public string ActiveModel
-        {
-            get { return _activeModel; }
-            set
-            {
-                SetAndNotify(ref this._activeModel, value);
-                NotifyOfPropertyChange(nameof(CanAddPrinter));
-            }
-        }
-        private string _activeDepartment;
-        public string ActiveDepartment
-        {
-            get { return _activeDepartment; }
-            set
-            {
-                SetAndNotify(ref this._activeDepartment, value);
-                NotifyOfPropertyChange(nameof(CanAddPrinter));
-            }
-        }
-        private string _activeLocation;
-        public string ActiveLocation
-        {
-            get { return _activeLocation; }
-            set
-            {
-                SetAndNotify(ref this._activeLocation, value);
-                NotifyOfPropertyChange(nameof(CanAddPrinter));
-            }
-        }
-        private string _activeIP;
-        public string ActiveIP
-        {
-            get { return _activeIP; }
-            set
-            {
-                SetAndNotify(ref this._activeIP, value);
-                NotifyOfPropertyChange(nameof(CanAddPrinter));
-            }
-        }
-        public string ActiveTicketHistory
-        {
-            get;
-            set;
-        }
-        #endregion
-
-
-        private Location _selectedLocation;
-        public Location SelectedLocation
-        {
-            get { return _selectedLocation; }
-            set
-            {
-                SetAndNotify(ref this._selectedLocation, value);
-                NotifyOfPropertyChange(nameof(CanAddLocation));
-                NotifyOfPropertyChange(nameof(CanAddDepartment));
-                NotifyOfPropertyChange(nameof(CanAddPrinter));
-            }
-        }
-
-
-        private ObservableCollection<Location> locations;
-        public ObservableCollection<Location> Locations
-        {
-            get { return locations; }
-            set { locations = value; }
-        }
-
-
-
-        private Department _selectedDepartment;
-        public Department SelectedDepartment
-        {
-            get { return _selectedDepartment; }
-            set
-            {
-                SetAndNotify(ref this._selectedDepartment, value);
-                NotifyOfPropertyChange(nameof(CanAddLocation));
-                NotifyOfPropertyChange(nameof(CanAddDepartment));
-                NotifyOfPropertyChange(nameof(CanAddPrinter));
-            }
-        }
-        public IEnumerable<Department> Departments => Locations.SelectMany(Location => Location.Departments);
-
-
-
-
 
         private object _selectedItem;
         public object SelectedItem
@@ -143,155 +43,115 @@ namespace PLT.Pages
             get { return _selectedItem; }
             set
             {
-                if (SetAndNotify(ref this._selectedItem, value)) 
+                if (SetAndNotify(ref this._selectedItem, value))
                 {
                     ActivateItemDetails(_selectedItem);
-                    NotifyOfPropertyChange(nameof(CanAddLocation));
-                    NotifyOfPropertyChange(nameof(CanAddDepartment));
-                    NotifyOfPropertyChange(nameof(CanAddPrinter));
+                    NotifyOfPropertyChange(nameof(EditTreeVM.CanAddLocation));
+                    NotifyOfPropertyChange(nameof(EditTreeVM.CanAddDepartment));
+                    NotifyOfPropertyChange(nameof(EditTreeVM.CanAddPrinter));
+                    NotifyOfPropertyChange(nameof(Search));
                 }
             }
         }
-        private void ActivateItemDetails(object item)
+        public void ActivateItemDetails(object item)
         {
             if (item is Location location)
             {
-                ActiveLocation = location.LocationName;
-                SelectedLocation = location;
-                SelectedDepartment = null;
-                ActiveWarrantyCode = null;
-                ActiveModel = null;
-                ActiveIP = null;
+                EditTreeVM.ActiveLocation = location.LocationName;
+                EditTreeVM.SelectedLocation = location;
+                EditTreeVM.SelectedDepartment = null;
                 
+
+                ViewTreeVM.ActiveLocation = location.LocationName;
+                ViewTreeVM.SelectedLocation = location;
+                ViewTreeVM.ActiveDepartment = null;
+                ViewTreeVM.SelectedDepartment = null;
+                ViewTreeVM.SelectedPrinter = null;
+                ViewTreeVM.ActiveWarrantyCode = null;
+                ViewTreeVM.ActiveModel = null;
+                ViewTreeVM.ActiveIP = null;
+                ViewTreeVM.ActiveTicketHistory = null;
             }
             else if (item is Department department)
             {
-                foreach (var Ltion in Locations.Where(x => x.Departments.Contains(department))) 
+                foreach (var Ltion in EditTreeVM.Locations.Where(x => x.Departments.Contains(department)))
                 {
-                    SelectedLocation = Ltion;
-                } 
-                ActiveDepartment = department.DepartmentName;
-                SelectedDepartment = department;
-                ActiveWarrantyCode = null;
-                ActiveModel = null;
-                ActiveIP = null;
+                    EditTreeVM.SelectedLocation = Ltion;
+                }
+                EditTreeVM.ActiveDepartment = department.DepartmentName;
+                EditTreeVM.SelectedDepartment = department;
 
-                
+
+                ViewTreeVM.ActiveDepartment = department.DepartmentName;
+                ViewTreeVM.SelectedDepartment = department;
+                ViewTreeVM.ActiveWarrantyCode = null;
+                ViewTreeVM.SelectedPrinter = null;
+                ViewTreeVM.ActiveModel = null;
+                ViewTreeVM.ActiveIP = null;
+                ViewTreeVM.ActiveTicketHistory = null;
+
             }
-            else if (item is Printer printer) 
+            else if (item is Printer printer)
             {
-                // ActiveLocation = printer.Location;
-                foreach (var Dment in Departments.Where(x => x.Printers.Contains(printer)))
+                foreach (var Dment in EditTreeVM.Departments.Where(x => x.Printers.Contains(printer)))
                 {
-                    SelectedDepartment = Dment;
-                    foreach (var Ltion in Locations.Where(x => x.Departments.Contains(Dment)))
+                    EditTreeVM.SelectedDepartment = Dment;
+                    ViewTreeVM.SelectedDepartment = Dment;
+                    ViewTreeVM.ActiveDepartment = Dment.DepartmentName;
+
+                    foreach (var Ltion in EditTreeVM.Locations.Where(x => x.Departments.Contains(Dment)))
                     {
-                        SelectedLocation = Ltion;
+                        EditTreeVM.SelectedLocation = Ltion;
+                        ViewTreeVM.SelectedLocation = Ltion;
+                        ViewTreeVM.ActiveLocation = Ltion.LocationName;
                     }
                 }
-                ActiveWarrantyCode = printer.WarrantyCode;
-                ActiveModel = printer.Model;
-                ActiveIP = printer.Ip;
+                EditTreeVM.ActiveWarrantyCode = printer.WarrantyCode;
+                EditTreeVM.ActiveModel = printer.Model;
+                EditTreeVM.ActiveIP = printer.Ip;
+                EditTreeVM.SelectedPrinter = printer;
+
+                ViewTreeVM.ActiveWarrantyCode = printer.WarrantyCode;
+                ViewTreeVM.ActiveModel = printer.Model;
+                ViewTreeVM.ActiveIP = printer.Ip;
+                ViewTreeVM.SelectedPrinter = printer;
+                ViewTreeVM.ActiveTicketHistory = printer.TicketHistory;
             }
         }
 
-
-
-        #region Can Execute Action Bools
-        public bool CanAddLocation
+        public void ChangeView()
         {
-            get { return !string.IsNullOrEmpty(ActiveMain) && !Locations.Any(x => x.LocationName == ActiveMain); }
-        }
-        public bool CanAddDepartment
-        {
-            get
+            
+            if (ActiveItem == ViewTreeVM) 
             {
-                if (SelectedLocation == null)
-                {
-                    return false;
-                }
-                else
-                {
-                    return !string.IsNullOrEmpty(ActiveMain) && !SelectedLocation.Departments.Any(x => x.DepartmentName == ActiveMain);
-                }
+                ActiveItem = EditTreeVM;
             }
-        }
-        public bool CanAddPrinter
-        {
-            get 
+            else if(ActiveItem == EditTreeVM) 
             {
-                if (SelectedDepartment == null)
-                {
-                    return false;
-                }
-                else
-                {
-                    return !D1.Printers.Any(x => x.WarrantyCode == ActiveWarrantyCode) && !string.IsNullOrEmpty(ActiveWarrantyCode);
-                }
+                ActiveItem = ViewTreeVM;
             }
+            
         }
-        public bool CanDeleteLocation
+        public void Search() 
         {
-            get { return true; } ///Changing later
-        }
-        public bool CanDeleteDepartment
-        {
-            get { return true; } ///Changing later
-        }
-        public bool CanDeletePrinter
-        {
-            get { return true; } ///Changing later
-        }
-
-        #endregion
-
-
-        #region Action Creations
-        public void AddLocation()
-        {
-            Locations.Add(new Location(ActiveMain));
-            NotifyOfPropertyChange(nameof(CanAddLocation));
-            NotifyOfPropertyChange(nameof(Locations));
-        }
-        public void AddDepartment()
-        {
-            SelectedLocation.Departments.Add(new Department(ActiveMain));
-            NotifyOfPropertyChange(nameof(CanAddDepartment));
-            NotifyOfPropertyChange(nameof(Departments));
-            SelectedDepartment = Departments.LastOrDefault();
-        }
-        public void AddPrinter()
-        {
-            if (SelectedDepartment != null)
+            if (EditTreeVM.Locations.Any(g => g.LocationName == ActiveSearchItem))  
             {
-                SelectedDepartment.Printers.Add(new Printer(ActiveWarrantyCode, ActiveModel, ActiveIP));
-                NotifyOfPropertyChange(nameof(CanAddPrinter));
+                SelectedItem = EditTreeVM.Locations.First(g => g.LocationName == ActiveSearchItem);
+            }
+            else if (EditTreeVM.Departments.Any(g => g.DepartmentName == ActiveSearchItem))
+            {
+                SelectedItem = EditTreeVM.Departments.First(g => g.DepartmentName == ActiveSearchItem);
+            }
+            else if (EditTreeVM.Printers.Any(g => g.WarrantyCode == ActiveSearchItem)) 
+            {
+                SelectedItem = EditTreeVM.Printers.First(g => g.WarrantyCode == ActiveSearchItem);
             }
         }
-        public void DeleteLocation() 
-        {
-            Locations.Remove(SelectedLocation);
-            SelectedLocation = Locations.LastOrDefault();
-        }
-        public void DeleteDepartment()
-        {
-            SelectedLocation.Departments.Remove(SelectedDepartment);
-            SelectedDepartment = SelectedLocation.Departments.LastOrDefault();
-        }
-        public void DeletePrinter()
-        {
-            SelectedDepartment.Printers.Remove((Printer)SelectedItem);
-            SelectedDepartment = SelectedLocation.Departments.LastOrDefault();
-        }
-
-        #endregion
 
         public ShellViewModel()
         {
             this.DisplayName = "Printer Location Tracker";
-            Locations = new ObservableCollection<Location>(){L1};
-            SelectedLocation = Locations.LastOrDefault();
-            
+            ActiveItem = ViewTreeVM;
         }
     }
 }

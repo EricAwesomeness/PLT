@@ -9,10 +9,13 @@
         xmlns:VI="clr-namespace:PLT.ViewInfrastructure"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance local:ShellViewModel}"
-        Height="450" Width="800">
+        Height="500" Width="800">
 
 
 
+
+
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height ="auto"/>
@@ -63,9 +66,9 @@
                     <RowDefinition Height="20"/>
                 </Grid.RowDefinitions>
 
-                <TreeView x:Name="MainTreeView" Grid.Row="0" Margin="1,1,0,1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding Locations}">
+                <TreeView x:Name="MainTreeView" Grid.Row="0" Margin="1,1,0,1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding EditTreeVM.Locations}">
                     <i:Interaction.Behaviors>
-                        <VI:SelectedTreeViewItemBehavior SelectedItem="{Binding SelectedItem}"/>
+                        <VI:SelectedTreeViewItemBehavior SelectedItem="{Binding SelectedItem}" />
                     </i:Interaction.Behaviors>
                     <TreeView.ItemTemplate>
                         <HierarchicalDataTemplate ItemsSource="{Binding Departments}">
@@ -84,66 +87,24 @@
                     </TreeView.ItemTemplate>
                 </TreeView>
 
-                <TextBox Grid.Row="1" Margin="1,1,0,1" x:Name ="Searchbox" Text="{Binding Path=SelectedTreeviewItem, UpdateSourceTrigger=PropertyChanged}" />
-            
-            
-            </Grid>
+                <Button Command="{s:Action ChangeView}" Height="25" Width="25" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Top" BorderThickness="0" Background="White">
+                    <Image Source="\ViewInfrastructure\Images\editpencil.png"/>
+                </Button>
+
+                <TextBox Grid.Row="1" Margin="1,1,0,1" x:Name ="Searchbox" Text="{Binding Path=ActiveSearchItem, UpdateSourceTrigger=PropertyChanged}" />
                 
-            <GridSplitter Width="40" Grid.Column="1" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch"/>
-
-            <Grid Grid.Column="2" Background="White">
-
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="25"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="25"/>
-                    <RowDefinition Height="25"/>
-                    <RowDefinition Height="25"/>
-                    <RowDefinition Height="25*"/>
-                    <RowDefinition Height="50"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100"/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-
-                <TextBox x:Name="MainTextBox" Text="{Binding Path=ActiveMain, UpdateSourceTrigger=PropertyChanged}" TabIndex="0" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="7"  Margin="2"/>
-
-
-                <Label Content="Location" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"/>
-                <ComboBox x:Name ="LocationComboBox" SelectedItem="{Binding Path=SelectedLocation}" ItemsSource="{Binding Path=Locations}" DisplayMemberPath="LocationName" TabIndex="1"  Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="6" Margin="2" />
-
-                <Label Content="Department" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"/>
-                <ComboBox x:Name ="DepartmentComboBox" SelectedItem="{Binding Path=SelectedDepartment}" ItemsSource="{Binding Path=SelectedLocation.Departments}" DisplayMemberPath="DepartmentName"  TabIndex="2" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="7" Margin="2"/>
-
-                <Label Content="Warranty Code" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"/>
-                <TextBox x:Name ="WarrantyCodeTextBox" Text="{Binding Path=ActiveWarrantyCode, UpdateSourceTrigger=PropertyChanged}" TabIndex="3" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="6"  Margin="2"/>
-
-                <Label Content="Model" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"/>
-                <TextBox x:Name ="ModelTextBox" Text="{Binding Path=ActiveModel, UpdateSourceTrigger=PropertyChanged, FallbackValue='Model Not Specified' }" TabIndex="4" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="7" Margin="2"/>
-
-                <Label Content="IP Address"  Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"/>
-                <TextBox x:Name ="IPTextBox" Text="{Binding Path=ActiveIP, UpdateSourceTrigger=PropertyChanged, FallbackValue='No Specified IP Address'}" TabIndex="5" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="7" Margin="2" />
-
-                <Label Content="Ticket History" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2"/>
-                <TextBox x:Name ="TicketHistoryTextBox" Text="{Binding Path=ActiveTicketHistory, UpdateSourceTrigger=PropertyChanged}" TabIndex="6" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="6" Margin="2"/>
-
-
-                <Button Content="Add Printer" Command="{s:Action AddPrinter}" Grid.Row="7" Grid.Column="0" Margin="0,0,4,0"/>
-                <Button Content="Delete Printer" Command="{s:Action DeletePrinter}" Grid.Row="7" Grid.Column="1" Margin="0,0,4,0"/>
-                <Button Content="Add Department" Command="{s:Action AddDepartment}" Grid.Row="7" Grid.Column="2" Margin="0,0,4,0"/>
-                <Button Content="Delete Department" Command="{s:Action DeleteDepartment}" Grid.Row="7" Grid.Column="3" Margin="0,0,4,0"/>
-                <Button Content="Add Location" Command="{s:Action AddLocation}" Grid.Row="7" Grid.Column="4" Margin="0,0,4,0" />
-                <Button Content="Delete Location" Command="{s:Action DeleteLocation}" Grid.Row="7" Grid.Column="5" Margin="0,0,4,0"/>
-                <Button Content="Submit History" Command="{s:Action SubmitHistory}" Grid.Row="7" Grid.Column="6" Margin="0,0,4,0"/>
-
+                
+                
             </Grid>
+           
+            
+            <!-- End of TreeView Column -->
+            
+            <GridSplitter Width="40" Grid.Column="1" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch" />
+
+
+            <!--View Models Switch Here-->
+            <ContentControl s:View.Model="{Binding ActiveItem}" Grid.Column="2"/>
 
         </Grid>
 

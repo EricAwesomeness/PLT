@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 
 namespace PLT.Pages
 {
-    public class Printer 
+    public class Printer
     {
 
         private string warrantycode = string.Empty;
         private string model = string.Empty;
         private string ip = string.Empty;
+        private string tickethistory = string.Empty;
 
 
         public string WarrantyCode
@@ -22,8 +23,8 @@ namespace PLT.Pages
         }
         public string Model
         {
-                get { return model; }
-                set { model = value; }
+            get { return model; }
+            set { model = value; }
         }
         public string Ip
         {
@@ -31,7 +32,12 @@ namespace PLT.Pages
             set { ip = value; }
         }
 
+        public string TicketHistory 
+        {
+            get { return tickethistory; }
+            set { tickethistory +="\n" + DateTime.Now + ": " + value; }
 
+        }
 
 
         public Printer(string warrantycode, string model, string ip)
@@ -40,8 +46,7 @@ namespace PLT.Pages
             WarrantyCode = warrantycode;
             Model = model;
             Ip = ip;
-            
-           
+ 
         }
     }
 }
