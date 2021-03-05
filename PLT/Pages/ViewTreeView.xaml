@@ -19,7 +19,7 @@
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="26"/>
                     <RowDefinition Height="25"/>
                     <RowDefinition Height="50*"/>
                     <RowDefinition Height="50"/>
@@ -49,10 +49,10 @@
                 <Label Content="IP Address"  Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"/>
                 <Label x:Name ="IPTextBox" Content="{Binding Path=ActiveIP, UpdateSourceTrigger=PropertyChanged}" TabIndex="5" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="7" Margin="2" />
 
-                <Label Content="Ticket History" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"/>
-                <Label x:Name ="TicketHistoryTextBox" Content="{Binding Path=ActiveTicketHistory, UpdateSourceTrigger=PropertyChanged}" TabIndex="6" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="7" Grid.RowSpan="2" Margin="2"/>
+                <Label Content="Ticket History:" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"/>
+                <TextBox x:Name ="TicketHistoryTextBox" Text="{Binding Path=ActiveTicketHistory, UpdateSourceTrigger=PropertyChanged}" TabIndex="6" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="7" Grid.RowSpan="2" Margin="2,0,2,2" IsReadOnly="True" VerticalScrollBarVisibility="Auto" BorderThickness="0"/>
 
-                <TextBox Text="{Binding ActiveMain}" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="5" Margin="2"/>
+                <TextBox Text="{Binding ActiveMain}" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="5" Margin="2" TextWrapping="WrapWithOverflow" />
                 <Button Content="Add Note" Command="{s:Action AddNote}" Grid.Row="8" Grid.Column="5" Grid.ColumnSpan="2" Margin="4"/>
             </Grid>
         </Grid>

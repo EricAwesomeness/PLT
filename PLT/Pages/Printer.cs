@@ -35,7 +35,7 @@ namespace PLT.Pages
         public string TicketHistory 
         {
             get { return tickethistory; }
-            set { tickethistory += "\n" + value; }
+            set { tickethistory += "\n" + DateTime.Now + " " + value; }
 
         }
 

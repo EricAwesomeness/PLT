@@ -245,8 +245,6 @@ namespace PLT.Pages
         {
             Locations = new ObservableCollection<Location>() { L1 };
             SelectedLocation = Locations.LastOrDefault();
-            
-            
         }
     }
 }

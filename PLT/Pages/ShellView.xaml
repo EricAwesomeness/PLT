@@ -9,7 +9,7 @@
         xmlns:VI="clr-namespace:PLT.ViewInfrastructure"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance local:ShellViewModel}"
-        Height="450" Width="800">
+        Height="500" Width="800">
 
 
 

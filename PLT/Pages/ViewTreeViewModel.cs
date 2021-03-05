@@ -27,6 +27,7 @@ namespace PLT.Pages
             set
             {
                 SetAndNotify(ref this._activeMain, value);
+                NotifyOfPropertyChange(nameof(AddNote));
             }
         }
         private string _activeWarrantyCode;
@@ -116,7 +117,6 @@ namespace PLT.Pages
             }
         }
 
-        
         public bool CanAddNote 
         {
             get { 
@@ -129,6 +129,7 @@ namespace PLT.Pages
         public void AddNote() 
         {
             SelectedPrinter.TicketHistory = ActiveMain;
+            ActiveTicketHistory = SelectedPrinter.TicketHistory.Trim();
         }
 
 

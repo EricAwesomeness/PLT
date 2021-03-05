@@ -49,7 +49,7 @@ namespace PLT.Pages
                 }
             }
         }
-        private void ActivateItemDetails(object item)
+        public void ActivateItemDetails(object item)
         {
             if (item is Location location)
             {
@@ -95,10 +95,13 @@ namespace PLT.Pages
                 {
                     EditTreeVM.SelectedDepartment = Dment;
                     ViewTreeVM.SelectedDepartment = Dment;
+                    ViewTreeVM.ActiveDepartment = Dment.DepartmentName;
+
                     foreach (var Ltion in EditTreeVM.Locations.Where(x => x.Departments.Contains(Dment)))
                     {
                         EditTreeVM.SelectedLocation = Ltion;
                         ViewTreeVM.SelectedLocation = Ltion;
+                        ViewTreeVM.ActiveLocation = Ltion.LocationName;
                     }
                 }
                 EditTreeVM.ActiveWarrantyCode = printer.WarrantyCode;
@@ -146,7 +149,7 @@ namespace PLT.Pages
         public ShellViewModel()
         {
             this.DisplayName = "Printer Location Tracker";
-            ActiveItem = EditTreeVM;
+            ActiveItem = ViewTreeVM;
         }
     }
 }
