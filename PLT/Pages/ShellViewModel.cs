@@ -28,8 +28,12 @@ namespace PLT.Pages
             get { return _activeSearchItem; }
             set
             {
-                SetAndNotify(ref this._activeSearchItem, value);
-                NotifyOfPropertyChange(nameof(Search));
+                if (SetAndNotify(ref this._activeSearchItem, value)) 
+                {
+                    Search();
+                    NotifyOfPropertyChange(nameof(Search));
+                };
+                
             }
         }
 
@@ -56,9 +60,7 @@ namespace PLT.Pages
                 EditTreeVM.ActiveLocation = location.LocationName;
                 EditTreeVM.SelectedLocation = location;
                 EditTreeVM.SelectedDepartment = null;
-                EditTreeVM.ActiveWarrantyCode = null;
-                EditTreeVM.ActiveModel = null;
-                EditTreeVM.ActiveIP = null;
+                
 
                 ViewTreeVM.ActiveLocation = location.LocationName;
                 ViewTreeVM.SelectedLocation = location;
@@ -68,6 +70,7 @@ namespace PLT.Pages
                 ViewTreeVM.ActiveWarrantyCode = null;
                 ViewTreeVM.ActiveModel = null;
                 ViewTreeVM.ActiveIP = null;
+                ViewTreeVM.ActiveTicketHistory = null;
             }
             else if (item is Department department)
             {
@@ -77,9 +80,7 @@ namespace PLT.Pages
                 }
                 EditTreeVM.ActiveDepartment = department.DepartmentName;
                 EditTreeVM.SelectedDepartment = department;
-                EditTreeVM.ActiveWarrantyCode = null;
-                EditTreeVM.ActiveModel = null;
-                EditTreeVM.ActiveIP = null;
+
 
                 ViewTreeVM.ActiveDepartment = department.DepartmentName;
                 ViewTreeVM.SelectedDepartment = department;
@@ -87,6 +88,7 @@ namespace PLT.Pages
                 ViewTreeVM.SelectedPrinter = null;
                 ViewTreeVM.ActiveModel = null;
                 ViewTreeVM.ActiveIP = null;
+                ViewTreeVM.ActiveTicketHistory = null;
 
             }
             else if (item is Printer printer)
@@ -134,15 +136,15 @@ namespace PLT.Pages
         {
             if (EditTreeVM.Locations.Any(g => g.LocationName == ActiveSearchItem))  
             {
-                SelectedItem = EditTreeVM.Locations.Where(g => g.LocationName == ActiveSearchItem);
+                SelectedItem = EditTreeVM.Locations.First(g => g.LocationName == ActiveSearchItem);
             }
             else if (EditTreeVM.Departments.Any(g => g.DepartmentName == ActiveSearchItem))
             {
-                SelectedItem = EditTreeVM.Departments.Where(g => g.DepartmentName == ActiveSearchItem);
+                SelectedItem = EditTreeVM.Departments.First(g => g.DepartmentName == ActiveSearchItem);
             }
             else if (EditTreeVM.Printers.Any(g => g.WarrantyCode == ActiveSearchItem)) 
             {
-                SelectedItem = EditTreeVM.Printers.Where(g => g.WarrantyCode == ActiveSearchItem);
+                SelectedItem = EditTreeVM.Printers.First(g => g.WarrantyCode == ActiveSearchItem);
             }
         }
 
