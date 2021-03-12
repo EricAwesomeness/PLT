@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Data;
+using Microsoft.Data.Sqlite;
 
 namespace PLT.Pages
 {
@@ -11,7 +13,7 @@ namespace PLT.Pages
         private EditTreeViewModel editTreeVM = new EditTreeViewModel();
         public EditTreeViewModel EditTreeVM
         {
-            get {return editTreeVM; }
+            get { return editTreeVM; }
             set { SetAndNotify(ref this.editTreeVM, value); }
         }
 
@@ -28,12 +30,12 @@ namespace PLT.Pages
             get { return _activeSearchItem; }
             set
             {
-                if (SetAndNotify(ref this._activeSearchItem, value)) 
+                if (SetAndNotify(ref this._activeSearchItem, value))
                 {
                     Search();
                     NotifyOfPropertyChange(nameof(Search));
                 };
-                
+
             }
         }
 
@@ -60,7 +62,7 @@ namespace PLT.Pages
                 EditTreeVM.ActiveLocation = location.LocationName;
                 EditTreeVM.SelectedLocation = location;
                 EditTreeVM.SelectedDepartment = null;
-                
+
 
                 ViewTreeVM.ActiveLocation = location.LocationName;
                 ViewTreeVM.SelectedLocation = location;
@@ -121,20 +123,20 @@ namespace PLT.Pages
 
         public void ChangeView()
         {
-            
-            if (ActiveItem == ViewTreeVM) 
+
+            if (ActiveItem == ViewTreeVM)
             {
                 ActiveItem = EditTreeVM;
             }
-            else if(ActiveItem == EditTreeVM) 
+            else if (ActiveItem == EditTreeVM)
             {
                 ActiveItem = ViewTreeVM;
             }
-            
+
         }
-        public void Search() 
+        public void Search()
         {
-            if (EditTreeVM.Locations.Any(g => g.LocationName == ActiveSearchItem))  
+            if (EditTreeVM.Locations.Any(g => g.LocationName == ActiveSearchItem))
             {
                 SelectedItem = EditTreeVM.Locations.First(g => g.LocationName == ActiveSearchItem);
             }
@@ -142,11 +144,18 @@ namespace PLT.Pages
             {
                 SelectedItem = EditTreeVM.Departments.First(g => g.DepartmentName == ActiveSearchItem);
             }
-            else if (EditTreeVM.Printers.Any(g => g.WarrantyCode == ActiveSearchItem)) 
+            else if (EditTreeVM.Printers.Any(g => g.WarrantyCode == ActiveSearchItem))
             {
                 SelectedItem = EditTreeVM.Printers.First(g => g.WarrantyCode == ActiveSearchItem);
             }
         }
+
+
+
+
+
+
+
 
         public ShellViewModel()
         {

@@ -35,18 +35,18 @@ namespace PLT.Pages
         public string TicketHistory 
         {
             get { return tickethistory; }
-            set { tickethistory +="\n" + DateTime.Now + ": " + value; }
+            set { tickethistory += value; }
 
         }
 
 
-        public Printer(string warrantycode, string model, string ip)
+        public Printer(string warrantycode, string model, string ip, string tickettickethistory)
         {
 
             WarrantyCode = warrantycode;
             Model = model;
             Ip = ip;
- 
+            TicketHistory = tickethistory;
         }
     }
 }

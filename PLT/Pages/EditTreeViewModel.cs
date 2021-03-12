@@ -1,4 +1,5 @@
-﻿using Stylet;
+﻿using Microsoft.Data.Sqlite;
+using Stylet;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,6 +11,12 @@ namespace PLT.Pages
 {
     public class EditTreeViewModel : Screen
     {
+
+        private static EditTreeViewModel _instance;
+        public static EditTreeViewModel Instance => _instance ??= new EditTreeViewModel();
+
+
+
 
         #region Databinding input text boxs
         private string _activeMain;
@@ -95,7 +102,7 @@ namespace PLT.Pages
             set { }
         }
 
-        private Printer p1 = new Printer("Warrenty Code 1", "P1", "P1");
+        private Printer p1 = new Printer("Warrenty Code 1", "P1", "P1", "P1");
         #endregion
 
         private Location _selectedLocation;
@@ -124,32 +131,24 @@ namespace PLT.Pages
             }
         }
 
-        private Printer selectedPrinter;
+        private Printer _selectedPrinter;
+       
         public Printer SelectedPrinter 
         {
-            get { return selectedPrinter; }
+            get { return _selectedPrinter; }
             set
             {
-                SetAndNotify(ref this.selectedPrinter, value);
+                SetAndNotify(ref this._selectedPrinter, value);
                 NotifyOfPropertyChange(nameof(CanAddLocation));
                 NotifyOfPropertyChange(nameof(CanAddDepartment));
                 NotifyOfPropertyChange(nameof(CanAddPrinter));
             }
         }
+        
+        public ObservableCollection<Location> Locations { get; set; }
 
-
-
-        private ObservableCollection<Location> locations;
-        public ObservableCollection<Location> Locations
-        {
-            get { return locations; }
-            set 
-            {
-                locations = value;
-            }
-        }
-        public IEnumerable<Department> Departments => Locations.SelectMany(Location => Location.Departments);
-        public IEnumerable<Printer> Printers => Departments.SelectMany(Department => Department.Printers);
+        public IEnumerable<Department> Departments => Locations.SelectMany(location => location.Departments);
+        public IEnumerable<Printer> Printers => Departments.SelectMany(department => department.Printers);
 
 
 
@@ -204,6 +203,7 @@ namespace PLT.Pages
             Locations.Add(new Location(ActiveMain));
             NotifyOfPropertyChange(nameof(CanAddLocation));
             NotifyOfPropertyChange(nameof(Locations));
+
         }
         public void AddDepartment()
         {
@@ -216,7 +216,7 @@ namespace PLT.Pages
         {
             if (SelectedDepartment != null)
             {
-                SelectedDepartment.Printers.Add(new Printer(ActiveWarrantyCode, ActiveModel, ActiveIP));
+                SelectedDepartment.Printers.Add(new Printer(ActiveWarrantyCode, ActiveModel, ActiveIP, ActiveTicketHistory));
                 NotifyOfPropertyChange(nameof(CanAddPrinter));
             }
         }
@@ -241,10 +241,53 @@ namespace PLT.Pages
         }
         #endregion
 
+
+        public void SaveDB()
+        {
+            var db = Database.Instance;
+
+            foreach (var loc in Locations) 
+            {
+                string locationName = loc.LocationName;
+                db.AddLocation(locationName);
+            }
+            foreach (var dep in Departments)
+            {
+                string departmentName = dep.DepartmentName;
+                db.AddDepartment(departmentName);
+            }
+            foreach (var printer in Printers)
+            {
+                var department = Departments.First(x => x.Printers.Contains(printer));
+                var location = Locations.First(x => x.Departments.Contains(department));
+                
+                string priDepartmentName = department.DepartmentName;
+                string priLocationName = location.LocationName;
+                string priWarrantyCode = printer.WarrantyCode;
+                string priModel = printer.Model;
+                string priIp = printer.Ip;
+                string priTicketHistory = printer.TicketHistory;
+
+                db.AddPrinter(priWarrantyCode, priModel, priIp, priTicketHistory, priDepartmentName, priLocationName);
+            }
+        }
+        public void LoadingData() 
+        {
+            var db = Database.Instance;
+            db.LoadLocations().ForEach(x => Locations.Add(new Location(x)));
+
+            Locations.ToList().ForEach(x => db.GetDepartmentsAtLocation(x.LocationName).ForEach(y => x.Departments.Add(new Department(y))));
+
+            Locations.ToList().ForEach(x => x.Departments.ToList().ForEach(y => db.GetPrintersAtDepartment(y.DepartmentName).ForEach(z => y.Printers.Add(new Printer(z.GetValue(0).ToString(), z.GetValue(1).ToString(), z.GetValue(2).ToString(), z.GetValue(3).ToString())))));
+        }
+
+
+
         public EditTreeViewModel() 
         {
-            Locations = new ObservableCollection<Location>() { L1 };
+            Locations = new ObservableCollection<Location>(){};
             SelectedLocation = Locations.LastOrDefault();
+            LoadingData();
         }
     }
 }

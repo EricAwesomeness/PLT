@@ -10,7 +10,8 @@ namespace PLT.Pages
 {
     public class Location
     {
-
+        private static Location _instance;
+        public static Location Instance => _instance ??= new Location("");
 
         private string locationName;
         public string LocationName
