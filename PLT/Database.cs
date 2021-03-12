@@ -27,7 +27,7 @@ namespace PLT
             return reader.ReadToEnd();
         }
 
-        private const string DatabaseFile = @"C:\...\PLT.db";
+        private const string DatabaseFile = @"C:\Users\eric.butler\source\repos\PLT\PLT\PLT.db";
         
         private readonly SqliteConnection _sqlConnection;
         
@@ -76,33 +76,27 @@ namespace PLT
             sqlCommand.ExecuteNonQuery();
         }
 
-        public async Task AddPrinterAsync(string priWarrantyCode, string priModel, string priIp, string priTicketHistory, string priDepartmentName, string priLocationName)
+        public async Task AddPrinterAsync(string priWarrantyCode, string priModel, string priIp, string priTicketHistory)
         {
 
-            var sqlCommand = new SqliteCommand("insert into Printers (WarrantyCode, Model, IP, TicketHistory, Department, Location) values (@PriWarrantyCode, @PriModel, @PriIP, @PriTicketHistory, @PriDepartmentName, @PriLocationName)", _sqlConnection);
+            var sqlCommand = new SqliteCommand("insert into Printers (WarrantyCode, Model, IP, TicketHistory ) values (@PriWarrantyCode, @PriModel, @PriIP, @PriTicketHistory)", _sqlConnection);
             sqlCommand.Parameters.AddWithValue("@PriWarrantyCode", priWarrantyCode);
             sqlCommand.Parameters.AddWithValue("@PriModel", priModel);
             sqlCommand.Parameters.AddWithValue("@PriIP", priIp);
-            sqlCommand.Parameters.AddWithValue("@PriTicketHistory", priTicketHistory);
-            sqlCommand.Parameters.AddWithValue("@PriDepartmentName", priDepartmentName);
-            sqlCommand.Parameters.AddWithValue("@PriLocationName", priLocationName);
-            
+            sqlCommand.Parameters.AddWithValue("@PriTicketHistory", priTicketHistory);         
             await sqlCommand.ExecuteNonQueryAsync();
         }
 
-        public void AddPrinter(string priWarrantyCode, string priModel, string priIp, string priTicketHistory, string priDepartmentName, string priLocationName)
+        public void AddPrinter(string priWarrantyCode, string priModel, string priIp, string priTicketHistory)
         {
-            var sqlCommand = new SqliteCommand("insert into Printers (WarrantyCode, Model, IP, TicketHistory, Department, Location) values (@PriWarrantyCode, @PriModel, @PriIP, @PriTicketHistory, @PriDepartmentName, @PriLocationName)", _sqlConnection);
+            var sqlCommand = new SqliteCommand("insert into Printers (WarrantyCode, Model, IP, TicketHistory ) values (@PriWarrantyCode, @PriModel, @PriIP, @PriTicketHistory)", _sqlConnection);
             sqlCommand.Parameters.AddWithValue("@PriWarrantyCode", priWarrantyCode);
             sqlCommand.Parameters.AddWithValue("@PriModel", priModel);
             sqlCommand.Parameters.AddWithValue("@PriIP", priIp);
             sqlCommand.Parameters.AddWithValue("@PriTicketHistory", priTicketHistory);
-            sqlCommand.Parameters.AddWithValue("@PriDepartmentName", priDepartmentName);
-            sqlCommand.Parameters.AddWithValue("@PriLocationName", priLocationName);
             sqlCommand.ExecuteNonQuery();
         }
 
-        
         public List<string> LoadLocations() 
         {
             List<string> result = new();
@@ -135,6 +129,7 @@ namespace PLT
 
             return result;
         }
+      
         public List<Array> GetPrintersAtDepartment(string Depname) 
         {
             List<Array> result = new();
@@ -160,10 +155,6 @@ namespace PLT
 
             return result;
         }
-
-
-
-
 
     }
 }
