@@ -268,12 +268,13 @@ namespace PLT.Pages
                 string priIp = printer.Ip;
                 string priTicketHistory = printer.TicketHistory;
 
-                db.AddPrinter(priWarrantyCode, priModel, priIp, priTicketHistory, priDepartmentName, priLocationName);
+                db.AddPrinter(priWarrantyCode, priModel, priIp, priTicketHistory);
             }
         }
         public void LoadingData() 
         {
             var db = Database.Instance;
+
             db.LoadLocations().ForEach(x => Locations.Add(new Location(x)));
 
             Locations.ToList().ForEach(x => db.GetDepartmentsAtLocation(x.LocationName).ForEach(y => x.Departments.Add(new Department(y))));
