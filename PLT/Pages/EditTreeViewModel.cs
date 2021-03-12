@@ -279,7 +279,7 @@ namespace PLT.Pages
 
             Locations.ToList().ForEach(x => db.GetDepartmentsAtLocation(x.LocationName).ForEach(y => x.Departments.Add(new Department(y))));
 
-            Locations.ToList().ForEach(x => x.Departments.ToList().ForEach(y => db.GetPrintersAtDepartment(y.DepartmentName).ForEach(z => y.Printers.Add(new Printer(z.GetValue(0).ToString(), z.GetValue(1).ToString(), z.GetValue(2).ToString(), z.GetValue(3).ToString())))));
+            Locations.ToList().ForEach(x => x.Departments.ToList().ForEach(y => db.GetPrintersAtDepartment(y.DepartmentName).ForEach(z => y.Printers.Add(z))));
         }
 
 

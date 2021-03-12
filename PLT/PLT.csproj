@@ -19,5 +19,8 @@
   <ItemGroup>
     <None Remove="Resources\PLT.sql" />
     <EmbeddedResource Include="Resources\PLT.sql" />
+    <None Update="PLT.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

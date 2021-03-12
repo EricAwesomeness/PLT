@@ -23,14 +23,14 @@ namespace PLT
             //does and dispose (release memory after done)
             using var stream = assembly.GetManifestResourceStream(resourceName);
             using var reader = new StreamReader(stream!);
-            
+
             return reader.ReadToEnd();
         }
 
-        private const string DatabaseFile = @"C:\Users\eric.butler\source\repos\PLT\PLT\PLT.db";
-        
+        private const string DatabaseFile = @"PLT.db";
+
         private readonly SqliteConnection _sqlConnection;
-        
+
         /// <summary>
         /// opening sql connection 
         /// </summary>
@@ -83,7 +83,7 @@ namespace PLT
             sqlCommand.Parameters.AddWithValue("@PriWarrantyCode", priWarrantyCode);
             sqlCommand.Parameters.AddWithValue("@PriModel", priModel);
             sqlCommand.Parameters.AddWithValue("@PriIP", priIp);
-            sqlCommand.Parameters.AddWithValue("@PriTicketHistory", priTicketHistory);         
+            sqlCommand.Parameters.AddWithValue("@PriTicketHistory", priTicketHistory);
             await sqlCommand.ExecuteNonQueryAsync();
         }
 
@@ -97,7 +97,7 @@ namespace PLT
             sqlCommand.ExecuteNonQuery();
         }
 
-        public List<string> LoadLocations() 
+        public List<string> LoadLocations()
         {
             List<string> result = new();
 
@@ -109,6 +109,7 @@ namespace PLT
                 string _locName = x.GetString(0);
                 result.Add(_locName);
             }
+
             return result;
         }
 
@@ -129,32 +130,28 @@ namespace PLT
 
             return result;
         }
-      
-        public List<Array> GetPrintersAtDepartment(string Depname) 
+
+        public List<Printer> GetPrintersAtDepartment(string departmentName)
         {
-            List<Array> result = new();
-         
+            List<Printer> result = new();
+
             var sqlCommand = new SqliteCommand("select WarrantyCode, Model, IP, TicketHistory from Printers where PrinterDepartment = @DepName", _sqlConnection);
-            sqlCommand.Parameters.AddWithValue("@DepName", Depname);
+            sqlCommand.Parameters.AddWithValue("@DepName", departmentName);
             SqliteDataReader z = sqlCommand.ExecuteReader();
 
             while (z.Read())
             {
 
-                string _warrentyCode = z[0].ToString();
-                string _model = z[1].ToString();
-                string _ip= z[2].ToString();
-                string _ticketHistory = z[3].ToString();
-
-                string[] pters = { _warrentyCode, _model, _ip, _ticketHistory };
-
-                result.Add(pters);
+                var warrantyCode = z[0].ToString();
+                var model = z[1].ToString();
+                var ip = z[2].ToString();
+                var ticketHistory = z[3].ToString();
+                var printer = new Printer(warrantyCode, model, ip, ticketHistory);
+                result.Add(printer);
             }
-
 
 
             return result;
         }
-
     }
 }
