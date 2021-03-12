@@ -72,10 +72,10 @@
                     </i:Interaction.Behaviors>
                     <TreeView.ItemTemplate>
                         <HierarchicalDataTemplate ItemsSource="{Binding Departments}">
-                            <Label Content="{Binding LocationName}" />
+                            <Label Content="{Binding Name}" />
                             <HierarchicalDataTemplate.ItemTemplate>
                                 <HierarchicalDataTemplate ItemsSource="{Binding Printers}">
-                                    <Label Content="{Binding DepartmentName}" />
+                                    <Label Content="{Binding Name}" />
                                     <HierarchicalDataTemplate.ItemTemplate>
                                         <DataTemplate>
                                             <Label Content="{Binding WarrantyCode}" />

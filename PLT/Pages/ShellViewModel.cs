@@ -59,12 +59,12 @@ namespace PLT.Pages
         {
             if (item is Location location)
             {
-                EditTreeVM.ActiveLocation = location.LocationName;
+                EditTreeVM.ActiveLocation = location.Name;
                 EditTreeVM.SelectedLocation = location;
                 EditTreeVM.SelectedDepartment = null;
 
 
-                ViewTreeVM.ActiveLocation = location.LocationName;
+                ViewTreeVM.ActiveLocation = location.Name;
                 ViewTreeVM.SelectedLocation = location;
                 ViewTreeVM.ActiveDepartment = null;
                 ViewTreeVM.SelectedDepartment = null;
@@ -80,11 +80,11 @@ namespace PLT.Pages
                 {
                     EditTreeVM.SelectedLocation = Ltion;
                 }
-                EditTreeVM.ActiveDepartment = department.DepartmentName;
+                EditTreeVM.ActiveDepartment = department.Name;
                 EditTreeVM.SelectedDepartment = department;
 
 
-                ViewTreeVM.ActiveDepartment = department.DepartmentName;
+                ViewTreeVM.ActiveDepartment = department.Name;
                 ViewTreeVM.SelectedDepartment = department;
                 ViewTreeVM.ActiveWarrantyCode = null;
                 ViewTreeVM.SelectedPrinter = null;
@@ -99,13 +99,13 @@ namespace PLT.Pages
                 {
                     EditTreeVM.SelectedDepartment = Dment;
                     ViewTreeVM.SelectedDepartment = Dment;
-                    ViewTreeVM.ActiveDepartment = Dment.DepartmentName;
+                    ViewTreeVM.ActiveDepartment = Dment.Name;
 
                     foreach (var Ltion in EditTreeVM.Locations.Where(x => x.Departments.Contains(Dment)))
                     {
                         EditTreeVM.SelectedLocation = Ltion;
                         ViewTreeVM.SelectedLocation = Ltion;
-                        ViewTreeVM.ActiveLocation = Ltion.LocationName;
+                        ViewTreeVM.ActiveLocation = Ltion.Name;
                     }
                 }
                 EditTreeVM.ActiveWarrantyCode = printer.WarrantyCode;
@@ -136,13 +136,13 @@ namespace PLT.Pages
         }
         public void Search()
         {
-            if (EditTreeVM.Locations.Any(g => g.LocationName == ActiveSearchItem))
+            if (EditTreeVM.Locations.Any(g => g.Name == ActiveSearchItem))
             {
-                SelectedItem = EditTreeVM.Locations.First(g => g.LocationName == ActiveSearchItem);
+                SelectedItem = EditTreeVM.Locations.First(g => g.Name == ActiveSearchItem);
             }
-            else if (EditTreeVM.Departments.Any(g => g.DepartmentName == ActiveSearchItem))
+            else if (EditTreeVM.Departments.Any(g => g.Name == ActiveSearchItem))
             {
-                SelectedItem = EditTreeVM.Departments.First(g => g.DepartmentName == ActiveSearchItem);
+                SelectedItem = EditTreeVM.Departments.First(g => g.Name == ActiveSearchItem);
             }
             else if (EditTreeVM.Printers.Any(g => g.WarrantyCode == ActiveSearchItem))
             {

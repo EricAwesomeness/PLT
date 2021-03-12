@@ -39,10 +39,10 @@
 
 
                 <Label Content="Location" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"/>
-                <ComboBox x:Name ="LocationComboBox" SelectedItem="{Binding Path=SelectedLocation}" ItemsSource="{Binding Path=Locations}" DisplayMemberPath="LocationName" TabIndex="1"  Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="6" Margin="2" />
+                <ComboBox x:Name ="LocationComboBox" SelectedItem="{Binding Path=SelectedLocation}" ItemsSource="{Binding Path=Locations}" DisplayMemberPath="Name" TabIndex="1"  Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="6" Margin="2" />
 
                 <Label Content="Department" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"/>
-                <ComboBox x:Name ="DepartmentComboBox" SelectedItem="{Binding Path=SelectedDepartment}" ItemsSource="{Binding Path=SelectedLocation.Departments}" DisplayMemberPath="DepartmentName"  TabIndex="2" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="7" Margin="2"/>
+                <ComboBox x:Name ="DepartmentComboBox" SelectedItem="{Binding Path=SelectedDepartment}" ItemsSource="{Binding Path=SelectedLocation.Departments}" DisplayMemberPath="Name"  TabIndex="2" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="7" Margin="2"/>
 
                 <Label Content="Warranty Code" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"/>
                 <TextBox x:Name ="WarrantyCodeTextBox" Text="{Binding Path=ActiveWarrantyCode, UpdateSourceTrigger=PropertyChanged}" TabIndex="3" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="6"  Margin="2"/>

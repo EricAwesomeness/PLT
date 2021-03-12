@@ -10,30 +10,20 @@ namespace PLT.Pages
 {
     public class Location
     {
-        private static Location _instance;
-        public static Location Instance => _instance ??= new Location("");
-
-        private string locationName;
-        public string LocationName
+        public int Id { get; }
+        public string Name { get; set; }
+        
+        public ObservableCollection<Department> Departments { get; }
+        
+        public Location(int id, string name, ObservableCollection<Department> departments = default) : this(name,departments)
         {
-            get { return locationName; }
-            set { locationName = value; }
+            Id = id;
         }
-
-
-        private ObservableCollection<Department> departments;
-        public ObservableCollection<Department> Departments
+        
+        public Location(string name, ObservableCollection<Department> departments = default)
         {
-            get { return departments; }
-            set { departments = value; }
-        }
-
-
-
-        public Location(string locationName)
-        {
-            LocationName = locationName;
-            departments = new ObservableCollection<Department>(){};
+            Name = name;
+            Departments = departments ?? new ObservableCollection<Department>();
         }
     }
 }
