@@ -27,7 +27,7 @@ namespace PLT
             return reader.ReadToEnd();
         }
 
-        private const string DatabaseFile = @"C:\Users\eric.butler\source\repos\PLT\PLT\PLT.db";
+        private const string DatabaseFile = @"C:\...\PLT.db";
         
         private readonly SqliteConnection _sqlConnection;
         
