@@ -9,44 +9,32 @@ namespace PLT.Pages
 {
     public class Printer
     {
+        private string _ticketHistory = string.Empty;
 
-        private string warrantycode = string.Empty;
-        private string model = string.Empty;
-        private string ip = string.Empty;
-        private string tickethistory = string.Empty;
-
-
-        public string WarrantyCode
-        {
-            get { return warrantycode; }
-            set { warrantycode = value; }
-        }
-        public string Model
-        {
-            get { return model; }
-            set { model = value; }
-        }
-        public string Ip
-        {
-            get { return ip; }
-            set { ip = value; }
-        }
-
+        public Department Department { get; set; }
+        public string WarrantyCode { get; set; }
+        public string Model { get; set; }
+        public string Ip { get; set; }
         public string TicketHistory 
         {
-            get { return tickethistory; }
-            set { tickethistory += value; }
+            get { return _ticketHistory; }
+            set { _ticketHistory += value; }
 
         }
 
 
-        public Printer(string warrantycode, string model, string ip, string tickettickethistory)
+        public Printer(string warrantycode, string model, string ip, string ticketHistory, Department department)
         {
-
+            Department = department;
             WarrantyCode = warrantycode;
             Model = model;
             Ip = ip;
-            TicketHistory = tickethistory;
+            TicketHistory = _ticketHistory;
+        }
+
+        public override string ToString()
+        {
+            return $"{nameof(WarrantyCode)}: {WarrantyCode}, {nameof(Model)}: {Model}, {nameof(Ip)}: {Ip}, {nameof(TicketHistory)}: {TicketHistory}";
         }
     }
 }

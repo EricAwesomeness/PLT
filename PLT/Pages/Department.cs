@@ -10,33 +10,22 @@ namespace PLT.Pages
 {
     public class Department
     {
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public Location Location { get; set;  }
+        public ObservableCollection<Printer> Printers { get; set; }
 
-        private string departmentName = string.Empty;
 
-
-        public string DepartmentName
+        public Department(string name, Location location)
         {
-            get { return departmentName; }
-            set { departmentName = value; }
-        }
-
-
-
-
-
-        private ObservableCollection<Printer> printers;
-        public ObservableCollection<Printer> Printers
-        {
-            get { return printers; }
-            set { printers = value; }
+            Location = location;
+            Name = name;
+            Printers = new ObservableCollection<Printer>(){};
         }
         
-
-
-        public Department(string departmentName)
+        public Department(int id, string name, Location location) : this(name,location)
         {
-            DepartmentName = departmentName;
-            printers = new ObservableCollection<Printer>(){};
+            Id = id;
         }
 
     }

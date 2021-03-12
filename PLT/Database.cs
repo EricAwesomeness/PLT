@@ -23,20 +23,20 @@ namespace PLT
             //does and dispose (release memory after done)
             using var stream = assembly.GetManifestResourceStream(resourceName);
             using var reader = new StreamReader(stream!);
-            
+
             return reader.ReadToEnd();
         }
 
-        private const string DatabaseFile = @"C:\Users\eric.butler\source\repos\PLT\PLT\PLT.db";
-        
+        private const string DatabaseFile = @"PLT.db";
+
         private readonly SqliteConnection _sqlConnection;
-        
+
         /// <summary>
         /// opening sql connection 
         /// </summary>
         private Database()
         {
-            _sqlConnection = new SqliteConnection(@$"Data Source={DatabaseFile};Mode=ReadWriteCreate");
+            _sqlConnection = new SqliteConnection(@$"Data Source={DatabaseFile};Mode=ReadWriteCreate;foreign keys=true;");
             _sqlConnection.Open();
             var sqlCommand = new SqliteCommand("SELECT name FROM sqlite_master WHERE type = 'table' ORDER BY 1", _sqlConnection);
             var reader = sqlCommand.ExecuteReader();
@@ -47,114 +47,103 @@ namespace PLT
             sqlCommand.ExecuteNonQuery();
         }
 
-
-        public async Task AddLocationAsync(string location)
-        {
-            var sqlCommand = new SqliteCommand("insert into Locations (LocationName) values (@locationName)", _sqlConnection);
-            sqlCommand.Parameters.AddWithValue("@locationName", location);
-            await sqlCommand.ExecuteNonQueryAsync();
-        }
-
         public void AddLocation(string location)
         {
-            var sqlCommand = new SqliteCommand("insert into Locations (LocationName) values (@locationName)", _sqlConnection);
+            var sqlCommand = new SqliteCommand("insert into Locations (name) values (@locationName)", _sqlConnection);
             sqlCommand.Parameters.AddWithValue("@locationName", location);
             sqlCommand.ExecuteNonQuery();
         }
 
-        public async Task AddDepartmentAsync(string department)
-        {
-            var sqlCommand = new SqliteCommand("insert into Departments (DepartmentName) values (@departmentName)", _sqlConnection);
-            sqlCommand.Parameters.AddWithValue("@departmentName", department);
-            await sqlCommand.ExecuteNonQueryAsync();
-        }
 
         public void AddDepartment(string department)
         {
-            var sqlCommand = new SqliteCommand("insert into Departments (DepartmentName) values (@departmentName)", _sqlConnection);
+            var sqlCommand = new SqliteCommand("insert into Departments (name) values (@departmentName)", _sqlConnection);
             sqlCommand.Parameters.AddWithValue("@departmentName", department);
             sqlCommand.ExecuteNonQuery();
         }
 
-        public async Task AddPrinterAsync(string priWarrantyCode, string priModel, string priIp, string priTicketHistory)
+        public void AddPrinter(Printer printer)
         {
-
-            var sqlCommand = new SqliteCommand("insert into Printers (WarrantyCode, Model, IP, TicketHistory ) values (@PriWarrantyCode, @PriModel, @PriIP, @PriTicketHistory)", _sqlConnection);
-            sqlCommand.Parameters.AddWithValue("@PriWarrantyCode", priWarrantyCode);
-            sqlCommand.Parameters.AddWithValue("@PriModel", priModel);
-            sqlCommand.Parameters.AddWithValue("@PriIP", priIp);
-            sqlCommand.Parameters.AddWithValue("@PriTicketHistory", priTicketHistory);         
-            await sqlCommand.ExecuteNonQueryAsync();
-        }
-
-        public void AddPrinter(string priWarrantyCode, string priModel, string priIp, string priTicketHistory)
-        {
-            var sqlCommand = new SqliteCommand("insert into Printers (WarrantyCode, Model, IP, TicketHistory ) values (@PriWarrantyCode, @PriModel, @PriIP, @PriTicketHistory)", _sqlConnection);
-            sqlCommand.Parameters.AddWithValue("@PriWarrantyCode", priWarrantyCode);
-            sqlCommand.Parameters.AddWithValue("@PriModel", priModel);
-            sqlCommand.Parameters.AddWithValue("@PriIP", priIp);
-            sqlCommand.Parameters.AddWithValue("@PriTicketHistory", priTicketHistory);
+            var sqlCommand = new SqliteCommand("insert into Printers (warranty_code, model, ip, ticket_history, department_id, location_id) values (@PriWarrantyCode, @PriModel, @PriIP, @PriTicketHistory, @PriDepId, @PriLocId)", _sqlConnection);
+            sqlCommand.Parameters.AddWithValue("@PriWarrantyCode", printer.WarrantyCode);
+            sqlCommand.Parameters.AddWithValue("@PriModel", printer.Model);
+            sqlCommand.Parameters.AddWithValue("@PriIP", printer.Ip);
+            sqlCommand.Parameters.AddWithValue("@PriTicketHistory", printer.TicketHistory);
+            sqlCommand.Parameters.AddWithValue("@PriDepId", printer.Department.Id);
+            sqlCommand.Parameters.AddWithValue("@PriLocId", printer.Department.Location.Id);
             sqlCommand.ExecuteNonQuery();
         }
 
-        public List<string> LoadLocations() 
+        public List<Location> LoadLocations()
         {
-            List<string> result = new();
-
-            var sqlCommand = new SqliteCommand("select LocationName from Locations", _sqlConnection);
+            var sqlCommand = new SqliteCommand(@"
+                SELECT L.id, L.name, D.id, D.name
+                FROM Locations L
+                INNER JOIN DepartmentLocations DL on L.id = DL.location_id
+                INNER JOIN Departments D on D.id = DL.department_id", _sqlConnection);
             SqliteDataReader x = sqlCommand.ExecuteReader();
+
+            Dictionary<int, Location> locations = new Dictionary<int, Location>();
 
             while (x.Read())
             {
-                string _locName = x.GetString(0);
-                result.Add(_locName);
+                int locationId = x.GetInt32(0);
+                string locationName = x.GetString(1);
+
+                int departmentId = x.GetInt32(2);
+                string departmentName = x.GetString(3);
+
+                if (!locations.ContainsKey(locationId))
+                {
+                    var location = new Location(locationId, locationName);
+                    location.Departments.Add(new Department(departmentId, departmentName, location));
+                    locations.Add(locationId, location);
+                }
+                else
+                {
+                    locations[locationId].Departments.Add(new Department(departmentId, departmentName, locations[locationId]));
+                }
             }
-            return result;
+            
+            return locations.Select(z => z.Value).ToList();
         }
 
-        public List<string> GetDepartmentsAtLocation(string Locname)
+        // public List<string> GetDepartmentsAtLocation(string Locname)
+        // {
+        //     List<string> result = new();
+        //
+        //     var sqlCommand = new SqliteCommand("select DepartmentName from Departments where DepartmentLocation = @LocName", _sqlConnection);
+        //     sqlCommand.Parameters.AddWithValue("@LocName", Locname);
+        //
+        //     SqliteDataReader y = sqlCommand.ExecuteReader();
+        //
+        //     while (y.Read())
+        //     {
+        //         string _depName = y.GetString(0);
+        //         result.Add(_depName);
+        //     }
+        //
+        //     return result;
+        // }
+
+        public List<Printer> GetPrintersAtDepartment(Department department)
         {
-            List<string> result = new();
+            List<Printer> result = new();
 
-            var sqlCommand = new SqliteCommand("select DepartmentName from Departments where DepartmentLocation = @LocName", _sqlConnection);
-            sqlCommand.Parameters.AddWithValue("@LocName", Locname);
-
-            SqliteDataReader y = sqlCommand.ExecuteReader();
-
-            while (y.Read())
-            {
-                string _depName = y.GetString(0);
-                result.Add(_depName);
-            }
-
-            return result;
-        }
-      
-        public List<Array> GetPrintersAtDepartment(string Depname) 
-        {
-            List<Array> result = new();
-         
-            var sqlCommand = new SqliteCommand("select WarrantyCode, Model, IP, TicketHistory from Printers where PrinterDepartment = @DepName", _sqlConnection);
-            sqlCommand.Parameters.AddWithValue("@DepName", Depname);
+            var sqlCommand = new SqliteCommand("select warranty_code, model, ip, ticket_history from Printers where department_id = @depId", _sqlConnection);
+            sqlCommand.Parameters.AddWithValue("@depId", department.Id);
             SqliteDataReader z = sqlCommand.ExecuteReader();
-
             while (z.Read())
             {
+                var warrantyCode = z[0].ToString();
+                var model = z[1].ToString();
+                var ip = z[2].ToString();
+                var ticketHistory = z[3].ToString();
 
-                string _warrentyCode = z[0].ToString();
-                string _model = z[1].ToString();
-                string _ip= z[2].ToString();
-                string _ticketHistory = z[3].ToString();
-
-                string[] pters = { _warrentyCode, _model, _ip, _ticketHistory };
-
-                result.Add(pters);
+                var printer = new Printer(warrantyCode, model, ip, ticketHistory, department);
+                result.Add(printer);
             }
-
-
-
             return result;
         }
-
     }
 }

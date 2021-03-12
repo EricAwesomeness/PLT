@@ -11,13 +11,6 @@ namespace PLT.Pages
 {
     public class EditTreeViewModel : Screen
     {
-
-        private static EditTreeViewModel _instance;
-        public static EditTreeViewModel Instance => _instance ??= new EditTreeViewModel();
-
-
-
-
         #region Databinding input text boxs
         private string _activeMain;
         public string ActiveMain
@@ -86,25 +79,7 @@ namespace PLT.Pages
             set;
         }
         #endregion
-
-        #region Instantiating D1 Department; L1 Location; P1 Printer
-        private Location l1 = new Location("Location 1");
-        public Location L1
-        {
-            get { return l1; }
-            set { }
-        }
-
-        private Department d1 = new Department("Department 1");
-        public Department D1
-        {
-            get { return d1; }
-            set { }
-        }
-
-        private Printer p1 = new Printer("Warrenty Code 1", "P1", "P1", "P1");
-        #endregion
-
+        
         private Location _selectedLocation;
         public Location SelectedLocation
         {
@@ -155,7 +130,7 @@ namespace PLT.Pages
         #region Action Methods
         public bool CanAddLocation
         {
-            get { return !string.IsNullOrEmpty(ActiveMain) && !Locations.Any(x => x.LocationName == ActiveMain); }
+            get { return !string.IsNullOrEmpty(ActiveMain) && !Locations.Any(x => x.Name == ActiveMain); }
         }
         public bool CanAddDepartment
         {
@@ -167,7 +142,7 @@ namespace PLT.Pages
                 }
                 else
                 {
-                    return !string.IsNullOrEmpty(ActiveMain) && !SelectedLocation.Departments.Any(x => x.DepartmentName == ActiveMain);
+                    return !string.IsNullOrEmpty(ActiveMain) && !SelectedLocation.Departments.Any(x => x.Name == ActiveMain);
                 }
             }
         }
@@ -207,7 +182,7 @@ namespace PLT.Pages
         }
         public void AddDepartment()
         {
-            SelectedLocation.Departments.Add(new Department(ActiveMain));
+            SelectedLocation.Departments.Add(new Department(ActiveMain, SelectedLocation));
             NotifyOfPropertyChange(nameof(CanAddDepartment));
             NotifyOfPropertyChange(nameof(Departments));
             SelectedDepartment = Departments.LastOrDefault();
@@ -216,7 +191,7 @@ namespace PLT.Pages
         {
             if (SelectedDepartment != null)
             {
-                SelectedDepartment.Printers.Add(new Printer(ActiveWarrantyCode, ActiveModel, ActiveIP, ActiveTicketHistory));
+                SelectedDepartment.Printers.Add(new Printer(ActiveWarrantyCode, ActiveModel, ActiveIP, ActiveTicketHistory, SelectedDepartment));
                 NotifyOfPropertyChange(nameof(CanAddPrinter));
             }
         }
@@ -248,12 +223,12 @@ namespace PLT.Pages
 
             foreach (var loc in Locations) 
             {
-                string locationName = loc.LocationName;
+                string locationName = loc.Name;
                 db.AddLocation(locationName);
             }
             foreach (var dep in Departments)
             {
-                string departmentName = dep.DepartmentName;
+                string departmentName = dep.Name;
                 db.AddDepartment(departmentName);
             }
             foreach (var printer in Printers)
@@ -261,25 +236,29 @@ namespace PLT.Pages
                 var department = Departments.First(x => x.Printers.Contains(printer));
                 var location = Locations.First(x => x.Departments.Contains(department));
                 
-                string priDepartmentName = department.DepartmentName;
-                string priLocationName = location.LocationName;
-                string priWarrantyCode = printer.WarrantyCode;
-                string priModel = printer.Model;
-                string priIp = printer.Ip;
-                string priTicketHistory = printer.TicketHistory;
+                string priDepartmentName = department.Name;
+                string priLocationName = location.Name;
 
-                db.AddPrinter(priWarrantyCode, priModel, priIp, priTicketHistory);
+                db.AddPrinter(printer);
             }
         }
         public void LoadingData() 
         {
             var db = Database.Instance;
 
-            db.LoadLocations().ForEach(x => Locations.Add(new Location(x)));
-
-            Locations.ToList().ForEach(x => db.GetDepartmentsAtLocation(x.LocationName).ForEach(y => x.Departments.Add(new Department(y))));
-
-            Locations.ToList().ForEach(x => x.Departments.ToList().ForEach(y => db.GetPrintersAtDepartment(y.DepartmentName).ForEach(z => y.Printers.Add(new Printer(z.GetValue(0).ToString(), z.GetValue(1).ToString(), z.GetValue(2).ToString(), z.GetValue(3).ToString())))));
+            var locs = db.LoadLocations();
+            foreach (var loc in locs)
+            {
+                Locations.Add(loc);
+                foreach (var dep in loc.Departments)
+                {
+                    var printers = db.GetPrintersAtDepartment(dep);
+                    foreach (var printer in printers)
+                    {
+                        dep.Printers.Add(printer);
+                    }
+                }
+            }
         }
 
 
