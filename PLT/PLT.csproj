@@ -9,6 +9,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="6.0.0-preview.1.21102.2" />
+    <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="6.0.0-preview.1.21102.2" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
+    <PackageReference Include="sqlite" Version="3.13.0" />
     <PackageReference Include="Stylet" Version="1.3.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\PLT.sql" />
+    <EmbeddedResource Include="Resources\PLT.sql" />
   </ItemGroup>
 </Project>

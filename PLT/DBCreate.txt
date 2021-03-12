@@ -1,0 +1,19 @@
+--
+-- File generated with SQLiteStudio v3.3.0 on Mon Mar 8 09:18:30 2021
+--
+-- Text encoding used: System
+--
+PRAGMA foreign_keys = off;
+BEGIN TRANSACTION;
+
+-- Table: Departments
+CREATE TABLE Departments (DepartmentName STRING);
+
+-- Table: Locations
+CREATE TABLE Locations (LocationName STRING);
+
+-- Table: Printers
+CREATE TABLE Printers (WarrantyCode TEXT PRIMARY KEY, Model TEXT, IP NUMERIC, TicketHistory TEXT, Department TEXT, Location TEXT);
+
+COMMIT TRANSACTION;
+PRAGMA foreign_keys = on;
